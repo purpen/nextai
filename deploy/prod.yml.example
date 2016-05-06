@@ -1,0 +1,183 @@
+---
+app.domain.base: 'http://www.taihuoniao.com'
+app.db.default: 'mysql://root:@localhost/test?charset=utf8'
+app.domain.mobile: 'http://m.taihuoniao.com'
+#if in production mode,uncomment and change it to 'prod'
+app.mode: 'prod'
+deploy.root: '/www/phenix'
+app.log.default:
+  class: 'Doggy_Log_FileLog'
+  options:
+    output: '/var/log/frbird.log'
+    level: 'warn'
+
+app.mongodb_rs: true
+app.mongodb_host: '127.0.0.1'
+# mongodb
+app.mongo.default:
+  host: '10.9.29.163:27017,10.9.17.240:27017,10.9.27.227:27017'
+  db: 'firebird'
+  username: 'root'
+  password: 'Frbird#2014$Nest'
+  replicaSet: 'rs_frbird'
+  
+app.keychains.private: 'xxxxOOOOxxxx'
+
+app.url.packaged: '{$app.url.qiniu.frstatic}'
+
+#dt cache
+app.dt:
+  cache: 'MemFile'
+# cache: 'XCache'
+  cache_dir: '/dev/shm/dt'
+app.js.use_bundle: 1
+app.css.use_bundle: 1
+
+# redisdb
+app.redis.default: 
+    host: '10.9.29.163'
+    port: 6379
+    verified: 1
+    requirepass: 'Fr%bird@201403$01'
+
+# redisdb-resque
+app.redis_host: '10.10.39.2:6379'
+
+app.disable_cached: 0
+app.cache.memcached.default:
+  servers:
+    - 
+      host: '10.10.134.62'
+      port: 11211
+      weight: 1
+
+#xun_search db name
+app.xun_search_db: 'phenix'
+
+# 是否验证api签名
+app.api.is_validate_sign: 1
+
+# 周年庆送红包活动 开关
+app.anniversary2015.switch: 0
+
+# 产品话题-话题评测
+app.product.topic_category_id: 18
+
+# 产品话题-评测
+app.product.topic_evaluating_category_id: 18
+
+# 十万火计(old)
+app.topic.dream_category_id: 49
+
+# 十万火计2
+app.contest.dream2_category_id: 49
+
+# 产品灵感
+app.topic.idea_category_id: 16
+# 案例作品
+app.stuff.okcase_category_id: 100
+# 蛋年活动
+app.birdegg.category_id: 80
+
+# 大赛作品分类--反向定制
+app.stuff.contest_category_id: 83
+
+# JBL商品ID
+app.product_jbl_id: 1088027398
+
+# 就现在商品
+app.comeon.product_id: 1112616234
+
+# 发送通知用户组
+app.send_notice_users: '10|544066'
+
+# 参与评论投票的话题ID
+app.topic_comment_ids: '37|36'
+
+# 评测报告类别
+app.try.report_category_id: 18
+
+app.url.action_base:    '{$app.domain.app}'
+
+app.url.upload_url: '{$app.domain.app}/uploader'
+app.doggyx.class_path: '/opt/project/doggy-x'
+
+#社区
+app.url.social: '{$app.url.domain}/social'
+app.url.topic.view: '{$app.url.domain}/topic/view-%s-%s.html'
+
+app.url.thumb: 'http://img.rayshe.com/%s'
+
+# 附件存储目录
+app.storage.sher: 
+    class: 'Doggy_Storage_Provider_FileSystem' 
+    options: 
+        root: '/data/storage/uploads' 
+        root_url: '/uploads'
+        hash_dir: false
+		
+# 支付宝
+app.alipay.partner: '2088411237666512'
+app.alipay.key: 'k9gnpm4nfd1qmrzyq3y4nzwj31m6fjc5'
+app.alipay.cacert: '/opt/project/phenix/vendor/cacert.pem'
+app.alipay.pendir: '/Users/xiaoyi/project/phenix/vendor'
+
+# SinaWeibo API
+app.sinaweibo.app_key: '3156984431'
+app.sinaweibo.app_secret: '392108a844e55d5d9db81a585feab60b'
+app.sinaweibo.callback_url: '{$app.url.action_base}/sina/authorize'
+app.sinaweibo.wap_callback_url: '{$app.url.wap}/app/site/sina/wap_authorize'
+
+# 淘宝
+app.taobao.key: '21781655'
+app.taobao.secret: '0b36c8be771fae402ba28bd59b75d589'
+
+# QQ API
+app.qq.app_id: '101092227'
+app.qq.app_key: 'ba61849a6ab90421e849c116f4f4dea4'
+app.qq.callback_url: '{$app.url.domain}/qq/authorize'
+app.qq.wap_callback_url: '{$app.url.wap}/app/site/qq/wap_authorize'
+app.qq.scope: 'get_user_info,add_share,add_weibo,add_t,add_pic_t,get_info'
+
+# 微信支付
+app.wechat.pay_sign_key: 'ArioxptbBJu25ANvabeBqavpE7diWUfTtDu1FCkt66Ojdzb1N3ajKoGAX3xdT3GIsj7C8g1pglSBVqaUNrqsoz5vfiASYrinEL4bAvuhTBgs1ZrdX7gJNgx8qgHBG0V4'
+
+# WeiXin API
+app.wx.app_id: 'wx34b60f01932004af'
+app.wx.app_secret: '85e685889332e9d69a6268fdec18b92e'
+app.wx.callback_url: '{$app.url.domain}/weixin/call_back'
+
+# 七牛存储（生产环境使用云存储）
+app.url.qiniu.upload: 'http://up.qiniu.com'
+
+app.url.upload: '{$app.url.qiniu.upload}'
+app.url.upload.product: '{$app.url.upload}'
+app.url.upload.topic: '{$app.url.upload}'
+app.url.upload.albums: '{$app.url.upload}/albums'
+app.url.upload.pictures: '{$app.url.upload}'
+app.url.upload.feditor: '{$app.url.upload}'
+app.url.upload.avatar: '{$app.url.action_base}/uploader/avatar'
+app.url.upload.dotry: '{$app.url.upload}'
+app.url.upload.advertise: '{$app.url.upload}/advertise'
+app.url.upload.stuff: '{$app.url.upload}'
+app.url.upload.gallery: '{$app.url.upload}/gallery'
+
+# 银联支付
+app.quickpay.key: '898111153990242'
+# 测试环境密钥，生成环境需更换
+app.quickpay.secret: '88888888' 
+app.url.front_pay_url: 'https://unionpaysecure.com/api/Pay.action'
+app.url.back_pay_url: 'https://besvr.unionpaysecure.com/api/BSPay.action'
+app.url.query_url: 'https://query.unionpaysecure.com/api/Query.action'
+
+# 实验室会员价格表
+app.d3in.vip_money:
+  day: 80
+  month: 800
+  quarter: 2112
+  self_year: 3840
+  year: 6720
+
+# 临时数据存储目录
+app.storage.tmpdir: '/www/phenix/data/export'
+
