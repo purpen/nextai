@@ -198,7 +198,7 @@
 						{% for asset in assets.rows %}
 						<div class="thumb block" id="{{ asset._id }}">
 							<div class="image">
-								<img src="{{ asset.thumbnails.small.view_url }}" />
+								<img src="{{ asset.thumbnails.mini.view_url }}" />
 								<input type="hidden" class="asset_id_list" name="asset[]" value="{{ asset._id }}" />
 							</div>
 							<div class="buttons">
