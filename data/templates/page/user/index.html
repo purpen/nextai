@@ -1,0 +1,195 @@
+{%extends 'layout/column.html'%}
+{% block title %}{{ user.screen_name }}-{% endblock %}
+{% block page_css %}
+<style type="text/css">
+  .comment-img-box img{
+    width: 140px;
+    cursor: auto;
+  }
+</style>
+{% endblock %}
+{% block js %}
+{% endblock %}
+{% block jquery %}
+	// 显示私信框
+	$('.ui.letter.button').bind('click', function(){
+		$('.ui.letter.modal').modal('show');
+	});
+	// 隐藏私信框
+	$('.ui.cancel.button').bind('click', function(){
+		$('.ui.letter.modal').modal('hide');
+	});
+    
+	// 加载更多动态
+	$('.ui.more.button').bind('click', function(){
+		var page = $(this).data('page');
+        if(page != 'no'){
+            $.get('{{ app_url_user }}/ajax_fetch_activity', { page:page, uid:{{ user.id }} });
+        }else{
+            $(this).text('没有更多了~');
+        }
+	});
+    
+    $('.loading.icon').ajaxStart(function(){
+        $(this).removeClass('hide');
+    }).ajaxStop(function(){
+        $(this).addClass('hide');
+    });
+	
+	$('#message-form').form({
+		content: {
+			identifier  : 'content',
+			rules: [
+				{
+					type   : 'empty',
+					prompt : '私信内容不能为空'
+				},
+				{
+					type   : 'maxLength[140]',
+					prompt : '私信内容不超过140字符'
+				}
+			]
+		}
+	}, {
+		inline : true,
+		onSuccess: function(event){
+			event.preventDefault();
+			$(this).ajaxSubmit({
+				dataType: 'json',
+				beforeSubmit: function(){
+					phenix.before_submit();
+				},
+				success: function(data){
+					phenix.after_submit();
+					
+					if(data.is_error){
+						$(event.target).addClass('error');
+						phenix.show_error_note(data.message, event.target);
+					}else{
+            $('.ui.letter.modal').modal('hide');
+            phenix.show_ok_note('私信发送成功!');
+            $(':input[name=content]').val('');
+            $(":input[name='users[]']").attr('checked', false);
+					}
+				}
+			});
+		}
+	});
+	
+	$('[data-countdown]').each(function() {
+		var $this = $(this), finalDate = $(this).data('countdown');
+		$this.countdown(finalDate, function(event) {
+			$this.html(event.strftime('%-D'));
+		});
+	});
+
+  $('.profile-setting.ui.button').click(function(){
+    phenix.redirect("{{app_url_my}}/profile?first_login=1");
+  });
+	
+{% endblock %}
+
+{% block content %}
+<div class="user masthead" style="background-image: url('{{ app_url_packaged }}/images/headbg/ucenter-{{ last_char |default 0 }}.jpg');">
+    <div class="masthead-cover">
+    	<div class="ui responsive grid">
+    		<div class="row">
+    			<div class="column">
+    				<div class="container">
+                        <img src="{{ user.big_avatar_url }}" class="ui big avatar image" />
+						{% if user.symbol %}
+						<img src="{{ app_url_packaged }}/images/V.png" class="image-UV{%if user.symbol==2%} blue{%endif%}">
+                        {%endif%}
+                    
+                    	<h2 class="ui header">
+                    		{{ user.nickname }}
+                    	</h2>
+                        
+                    	<p class="summary">{{ user.summary }}</p>
+                    	{% if user._id != visitor.id %}
+                    	{% if !is_ship %}
+                    	<a href="{{ app_url_user }}/ajax_follow?id={{ user._id }}" class="ui small white inverted button ajax" id="user_{{ user._id }}_ship">
+                    		关注 
+                    	</a>
+                    	{% else %}
+                    	<a href="{{ app_url_user }}/ajax_cancel_follow?id={{ user._id }}" class="ui small white inverted button ajax" id="user_{{ user._id }}_ship">已关注</a>
+                    	{% endif %}
+
+                    	<button class="ui small white letter inverted button">
+                    		私信
+                    	</button>
+                    	{% endif %}
+                    </div>
+    			</div>
+    		</div>
+        </div>
+    </div>
+</div>
+
+{%include 'block/user_submenu.html'%}
+
+<div class="user center">
+	<div class="ui responsive grid">
+		<div class="row">
+			<div class="column">
+
+                <div class="ui compact grid">
+                    <div class="twelve wide column">
+                        {% if is_first_login==1 %}
+							<div class="ui attached segment" style="color:green;">
+                                充实自己，才能活的丰满立体，比如鸟币和美女? 马上完善个人信息,让更多人找到你!  
+                                <div class="mini ui profile-setting green button"><i class="fa-pencil icon"></i>个人设置</div>
+							</div>
+                        {%endif%}
+                        <div class="ui segment">
+                            {% timeline_list var:'list' page:page user_id:user.id %}
+            				<div class="ui divided timeline list" id="user-activity-list">
+                                {% for line in list.rows %}
+                                <div class="item">
+                                    <img class="ui small avatar image" src="{{ line.user.small_avatar_url }}" />
+                                    <div class="content">
+                                        <div class="header">
+                                            <a href="{{ line.user.home_url }}" title="{{ line.user.nickname }}" class="ui link">{{ line.user.nickname }}</a> <small>{{ line.created_on }}</small>
+                                        </div>
+                                        <div class="description">
+                                            {{ line.label }} <a href="{{ line.target.view_url }}" target="_blank" class="ui link">{{ line.target.title }}</a>.
+                                            {% if line.comment %}
+                                                <p>{{ line.comment.content }}</p>
+                                            {% endif %}
+                                        </div>
+                                        {% if line.target.cover %}
+                                        <div class="cover">
+                                            <a href="{{ line.target.view_url }}" target="_blank">
+                                                <img class="ui image" src="{{ line.target.cover_small_url }}" />
+                                            </a>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% else %}
+                                <div class="item">
+                                    <p>还没有任何动态，快邀请他参与~~</p>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        {% if list.total_page > 1 %}
+                        <div class="ui gray more fluid button" data-page="2">
+                            <i class="loading icon ui hide"></i> 查看更多
+                        </div>
+                        {% endif %}
+                		
+                    </div>
+                    <div class="four wide column">
+                        {%include 'block/user_rightbar.html'%}
+                    </div>
+                </div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% include "block/message.html" %}
+
+{% endblock %}

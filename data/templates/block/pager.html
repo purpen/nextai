@@ -1,0 +1,29 @@
+{%if pager%}
+<div class="ui pagination menu">
+    {% if pager.show_prev %}
+    <a class="icon prev item" href="{{pager.prev_url}}"><i class="left arrow icon"></i></a>
+    {% else %}
+	<div class="icon disabled prev item"><i class="arrow left icon"></i></div>
+    {% endif %}
+
+    {%for p in pager.pages%}
+    {% if p.prefix_text %}
+	<div class="item">{{ p.prefix_text }}</div>
+	{% endif %}
+	<a class="{{p.css}} item" href="{{p.url}}">{{p.page_index}}</a>
+
+    {% if p.suffix_text %}
+	<div class="item">{{ p.suffix_text }}</div>	
+	{% endif %}
+
+    {%endfor%}
+
+    {% if pager.show_next %}
+	<a class="icon next item" href="{{pager.next_url}}"><i class="right arrow icon"></i></a>
+    {% else %}
+	<div class="icon disabled next item">
+    	<i class="right arrow icon"></i>
+	</div >
+    {% endif %}
+</div>
+{%endif%}

@@ -1,0 +1,66 @@
+{%extends 'layout/admin.html'%}
+
+{% block content %}
+	<h3 class="ui header">新闻列表</h3>
+	
+	<div class="ui secondary pointing magenta clearfix menu">
+		<a href="{{ app_url_admin_base }}/topic" class="active item">
+			全部列表
+		</a>
+	  	<div class="right menu">
+			<a href="{{ app_url_admin_base }}/topic/submit" class="item">
+				<i class="edit icon"></i> 新增新闻
+			</a>
+	    </div>
+	</div>
+	{% topic_list var:'topics' page:1 size:15 %}
+	<table class="ui table">
+		<thead>
+			<tr>
+				<th>标题</th>
+    			<th>状态</th>
+    			<th>管理操作</th>
+			</tr>
+		</thead>
+		
+		<tbody>
+			{% for topic in topics.rows %}
+				<tr>
+					<td>
+						<h4 class="ui header">
+                            <a href="{{ topic.view_url }}" title="{{ topic.title }}" class="ui link">{{ topic.title|truncate 30 }}</a>
+                        </h4>
+						<div class="attribute">
+							<span class="category">{{ topic.category.name }}</span> | 
+							<span class="author">
+								{{ topic.user.nickname }}  <i class="time icon"></i>于{{ topic.created_on|relative_datetime }}发表
+							</span>
+						</div>
+					</td>
+                    <td>
+                        {% if topic.published == 1 %}
+                        <span class="ui green label">已发布</span>
+                        {% else %}
+                        <span class="ui gray label">草稿箱</span>
+                        {% endif %}
+                    </td> 
+                    <td>
+    					<div class="ui divided horizontal list">
+    						<a href="{{ app_url_admin_base }}/topic/submit?id={{ topic._id }}" class="ui link item">编辑</a> 
+    						<a href="{{ app_url_admin_base }}/topic/deleted?id={{ topic._id }}" class="ui link item confirm-request">删除</a>
+    					</div>
+                    </td>
+				</tr>
+			{% endfor %}
+            
+		</tbody>
+	</table>
+	
+	{% if topics.total_page > 1 %}
+	<div class="ui pagination">
+		{% pager url:pager_url,total_rows:list.total_rows,total_page:list.total_page,current_page:page,var:'pager',pager_size:9 %}
+		{%include 'block/pager.html'%}
+	</div>
+	{% endif %}
+	
+{% endblock %}

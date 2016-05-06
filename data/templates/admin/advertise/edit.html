@@ -1,0 +1,253 @@
+{%extends 'layout/admin.html'%}
+{% block page_css %}
+    <link rel="stylesheet" href="{{ app_url_packaged }}/css/fineuploader-3.5.0.css" type="text/css" />
+{% endblock %}
+
+{% block jquery %}
+	$('#advertise-form').form({
+		space_id: {
+			identifier  : 'space_id',
+			rules: [
+				{
+					type   : 'empty',
+					prompt : '所属位置没有选择'
+				}
+			]
+		},
+		title: {
+			identifier  : 'title',
+			rules: [
+				{
+					type   : 'empty',
+					prompt : '标题不能为空'
+				}
+			]
+		}
+	}, {
+		inline: true,
+		onSuccess: function(event){
+			event.preventDefault();
+			$(event.target).ajaxSubmit();
+		}
+	});
+	
+	var file_count = 1;
+	var ord = function(){
+		return file_count++;
+	};
+	
+	var up = $('#phenix-uploader').fineUploader({
+		debug: true,
+      	request: {
+			inputName:'file',
+			params: {'token': '{{ token }}','x:pid': '{{ pid }}', 'x:domain': '{{ domain }}', 'x:ord': ord, 'x:user_id': {{ user_id }},'x:asset_type': {{ asset_type }},'x:parent_id': '{{ advertise._id }}','file_id': '{{ pid }}'},
+        	endpoint: '{{ app_url_upload_advertise }}'
+      	},
+		text: {
+            uploadButton: '<a class="ui active magenta labeled icon button" href="javascript:void(0);"><i class="cloud upload icon"></i>选择图片</a>'
+		},
+		template: '<div class="qq-uploader">' +
+					'<pre class="qq-upload-drop-area"><span>{dragZoneText}</span></pre>' +
+					'<div class="qq-upload-button">{uploadButtonText}</div>' +
+					'<span class="qq-drop-processing"><span>{dropProcessingText}</span><span class="qq-drop-processing-spinner"></span></span>' +
+					'<ul class="qq-upload-list clearfix" style="margin-top: 5px; text-align: center;"></ul>' +
+					'</div>',
+		validation: {
+	        allowedExtensions: ['jpeg', 'jpg', 'png'],
+	        sizeLimit: 3145728 // 3M = 3 * 1024 * 1024 bytes
+	    }
+    }).on('complete', function (event, id, name, result) {
+		if(result.is_error){
+			sher.show_error_note(result.message);
+		}else{
+			$('.qq-upload-list').children().eq(id).fadeOut();
+			
+			$.get('{{ app_url_action_base }}/uploader/check_upload_assets', {'assets': result.data.ids, 'asset_type': {{ asset_type||default 0 }}, 'asset_domain':'{{ domain }}' });
+		}
+	});
+	
+	// 设置封面图
+	$('#asset-list .ajax-cover').livequery(function(){
+		$(this).click(function(){
+			$this = $(this);
+			var id = $(this).attr('data-value');
+			
+			$('#asset-list .ajax-cover.active').removeClass('active');
+			$(this).addClass('active');
+			
+			$('#ad_cover_id').val(id);
+			return false;
+		});
+	});
+	
+{% endblock %}
+{% block content %}
+	<h3 class="ui header">推荐管理</h3>
+	
+	<div class="ui secondary pointing magenta clearfix menu">
+		<a href="{{ app_url_admin_base }}/advertise" class="{{ css_advertise }} item">推荐列表</a>
+		<a href="{{ app_url_admin_base }}/advertise/space" class="{{ css_space }} item">位置列表</a>
+	  	<div class="right menu">
+			<a href="{{ app_url_admin_base }}/advertise/edit" class="active item">
+				<i class="add icon"></i> 新增推荐
+			</a>
+			<a href="{{ app_url_admin_base }}/advertise/space_edit" class="item">
+				<i class="add icon"></i> 新增位置
+			</a>
+	    </div>
+	</div>
+	
+	<div class="ui sub nav">
+		<form action="{{ app_url_admin_base }}/advertise" method="post">
+			<label>搜索：</label>
+			<div class="ui icon input">
+				<input placeholder="Search..." type="text" name="q">
+				<i class="search link icon"></i>
+			</div>
+		</form>
+	</div>
+	
+	<div class="ui form segment">
+		{% if mode == 'create' %}
+		<h4>新增推荐内容</h4>
+		{% else %}
+		<h4>编辑推荐内容</h4>
+		{% endif %}
+		
+		<form action="{{ app_url_admin_base }}/advertise/save" method="post" id="advertise-form">
+			<input type="hidden" name="_id" value="{{ advertise._id }}" />
+			<input type="hidden" name="file_id" value="{{ pid }}" id="file_id" />
+			
+			<div class="three fields">
+				<div class="field">
+					<label for="space_id">所属位置：</label>
+					{% space_list var:'spacelist' page:page size:100 %}
+					<div class="ui fluid selection dropdown">
+						<input type="hidden" name="space_id" value="{{ advertise.space_id }}" />
+					    <div class="default text">请选择</div>
+					    <i class="dropdown icon"></i>
+					    <div class="menu">
+							{% for space in spacelist.rows %}
+              <div data-value="{{ space._id }}" class="{% if space._id == advertise.space_id %}active {% endif %}item">{% if space.kind_name %}[{{ space.kind_name.name }}]{%endif%}{{ space.title }}</div>
+							{% endfor %}
+					    </div>
+					</div>
+					<div class="ui pointing top label">必须选择一个投放位置!</div>
+				</div>
+				<div class="field">
+				  	<label for="ordby">排序：</label>
+					<input type="text" name="ordby" value="{{ advertise.ordby|default 0 }}" />
+					<div class="ui pointing top label">数字越小越靠前!</div>
+				</div>
+				<div class="field">
+				  	<label for="mode">显示方式：</label>
+					<div class="ui fluid selection dropdown">
+						<input type="hidden" name="mode" value="{{ advertise.mode }}" />
+					    <div class="default text">请选择</div>
+					    <i class="dropdown icon"></i>
+					    <div class="menu">
+							<div data-value="2" class="{% if advertise.mode == 2 %}active {% endif %}item">图文模式</div>
+							<div data-value="1" class="{% if advertise.mode == 1 %}active {% endif %}item">单图模式</div>	
+					    </div>
+					</div>
+				</div>
+			</div>
+			<div class="two fields">
+				<div class="field">
+				  	<label for="title">标题：</label>
+					<input type="text" name="title" value="{{ advertise.title }}" />
+				</div>
+				<div class="field">
+				  	<label for="cate_title">类别标题：</label>
+					<input type="text" name="cate_title" value="{{ advertise.cate_title }}" placeholder="精选商品/火爆预售" />
+				</div>
+			</div>
+			<div class="field">
+			  	<label for="sub_title">副标题：</label>
+				<input type="text" name="sub_title" value="{{ advertise.sub_title }}" />
+			</div>
+			
+			<p><label for="type">链接类型：</label></p>
+			<div class="five fields">
+				<div class="field">
+					<div class="ui radio checkbox">
+						<input type="radio" name="type" value="1" {% if advertise.type == 1 %}checked="checked"{% endif %} /> 
+						<label>普通链接</label>
+					</div>
+				</div>
+				<div class="field">
+					<div class="ui radio checkbox">
+						<input type="radio" name="type" value="2" {% if advertise.type == 2 %}checked="checked"{% endif %} /> 
+						<label>商品ID</label>
+					</div>
+				</div>
+			</div>
+			
+			<div class="field">
+			  	<label for="web_url">链接(ID)：</label>
+				<input type="text" name="web_url" value="{{ advertise.web_url }}" placeholder="普通链接/ID/关键词" />
+			</div>
+			
+			<div class="field">
+				<p>上传图片:</p>
+				<input type="hidden" name="cover_id" id="ad_cover_id" value="{{ advertise.cover_id }}" />
+				<div id="phenix-uploader"></div>
+				<div id="asset-list" class="ui four blocks">
+					{% if mode == 'edit' %}
+						{% asset_list var:'assets' parent_id:advertise._id size:20 asset_type:3 %}
+						{% for asset in assets.rows %}
+						<div class="thumb block" id="{{ asset._id }}">
+							<div class="image">
+								<img src="{{ asset.thumbnails.small.view_url }}" />
+								<input type="hidden" class="asset_id_list" name="asset[]" value="{{ asset._id }}" />
+							</div>
+							<div class="buttons">
+								<div class="ui large links">
+									<a href="{{ app_url_fever }}/delete_asset?id={{ advertise._id }}&asset_id={{ asset._id }}" class="ui link ajax pop" data-content="删除此缩略图？" data-variation="inverted">
+										<i class="remove icon"></i>
+									</a>
+								
+									<a href="javascript:void(0);" class="ui link {%if advertise.cover_id == asset._id %}active {%endif%}ajax-cover pop" data-content="设置封面图" data-variation="inverted" data-value="{{ asset._id }}">
+										<i class="checkered flag icon"></i>
+									</a>
+								</div>
+							</div>
+						</div>
+						{% endfor %}
+					{% endif %}
+				</div>
+			</div>
+            
+			<div class="field">
+			  	<label for="summary">简述：</label>
+				<textarea class="small" name="summary">{{ advertise.summary }}</textarea>
+			</div>
+            
+			<div class="three fields">
+				<div class="field">
+				  	<label for="bgcolor">扩展背景色值：</label>
+					<input type="text" name="bgcolor" value="{{ advertise.bgcolor }}" placeholder="#000000" />
+				</div>
+				<div class="field">
+				  	<label for="btn_title">按钮名称：</label>
+					<input type="text" name="btn_title" value="{{ advertise.btn_title }}" placeholder="了解详情/火热预定/立即抢购" />
+				</div>
+				<div class="field">
+				  	<label for="text_align">对齐方式：</label>
+					<div class="ui fluid selection dropdown">
+						<input type="hidden" name="text_align" value="{{ advertise.text_align }}" />
+					    <div class="default text">请选择</div>
+					    <i class="dropdown icon"></i>
+					    <div class="menu">
+							<div data-value="left" class="{% if advertise.text_align == 'left' %}active {% endif %}item">左对齐</div>
+							<div data-value="center" class="{% if advertise.text_align == 'center' %}active {% endif %}item">居中对齐</div>
+					    </div>
+					</div>
+				</div>
+			</div>
+			
+			<input type="submit" class="ui red inverted button" value="确认保存">
+			<input type="button" class="ui green inverted cancel button" value="取消">
+		</form>
+	</div>
+{% endblock %}

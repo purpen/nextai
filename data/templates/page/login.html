@@ -1,0 +1,93 @@
+{%extends 'layout/base.html'%}
+{% block title %}现在登录-{% endblock %}
+{% block page_css %}
+<style type="text/css">
+    
+</style>
+{% endblock %}
+
+{% block jquery %}
+	sher.build_auth_page();
+	
+	var wait = 60,can_send=true;
+	var limitime = function(){
+		if(wait == 0){
+			can_send = true;
+			wait = 60;
+			$('#fetch-verify-code').removeClass('active').text('获取验证码');
+		}else{
+			can_send = false;
+			
+			wait--;
+			$('#fetch-verify-code').addClass('active').text('重新发送('+wait+')');
+			setTimeout(function(){
+				limitime();
+			}, 1000);
+		}
+	}
+	
+	// js验证手机号码格式
+	function validatemobile(mobile) { 
+		if(mobile.length==0) 
+		{ 
+		   return false;
+		}
+		
+		if(mobile.length!==11) 
+		{   
+			return false;
+		} 
+		 
+		var myreg = /^(((13[0-9]{1})|(14[0-9]{1})|(15[0-9]{1})|(17[0-9]{1})|(18[0-9]{1}))+\d{8})$/; 
+		if(!myreg.test(mobile)) 
+		{
+			return false;
+		}
+		
+		return true;
+	}
+
+	$('.ui.green.icon.button').bind('click', function(){
+		$('.ui.share.basic.modal').modal('show');
+	});
+
+{% endblock %}
+
+{% block content %}
+<div class="ui responsive grid">
+    <div class="row">
+        <div class="four wide column"></div>
+        <div class="eight wide column width">
+    		<div class="login box">
+    			<h2 class="ui center aligned header">登录</h2>
+				<!-- 普通方式登陆 -->
+				<form action="{{ app_url_action_base }}/auth/do_login" class="ui form auth" method="post" id="login-form">                    
+					<div class="field">
+					  	<input type="text" name="account" placeholder="手机号码" />
+					</div>
+					<div class="field">
+					  	<input type="password" name="password" id="password" placeholder="密码" />
+					</div>
+					<div class="inline field">
+						<div class="ui checkbox">
+				          	<input type="checkbox" name="terms" checked="checked" />
+				          	<label for="terms">自动登录</label>
+				        </div>
+						<a href="{{ app_url_auth }}/forget" title="忘记密码？" class="ui link forgot">忘记密码？</a>
+					</div>
+		
+					<div class="field">
+						<div class="fluid ui large active red inverted submit button">登录</div>
+					</div>
+				</form>
+    			<div class="sign-up">
+    				没有账号？<a href="{{ app_url_register }}" title="立即注册">立即注册</a>
+    			</div>
+
+    		</div>
+			
+        </div>
+        <div class="column"></div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		{%block meta%}
+		<meta name="title" content="{%if page_title_suffix%}{{page_title_suffix}}{%else%}智感生活{%endif%}" />
+		<meta name="keywords" content="{%if page_keywords_suffix%}{{page_keywords_suffix}}{%else%}智感生活,智能硬件,智能硬件孵化,孵化社区,创意众筹,硬件营销,硬件推广{%endif%}"/>
+		<meta name="description" content="{%if page_description_suffix%}{{page_description_suffix}}{%else%}智感生活{%endif%}" />
+		<meta content="智感生活" name="author" />
+		{%endblock%}
+        <title>{% block title %}{% endblock %}{%if page_title_suffix%}{{page_title_suffix}}{%else%}智感生活{%endif%}</title>
+		<link rel="shortcut icon" href="/favicon.ico" />
+        <!--[if lte IE 9]>
+          <link rel="stylesheet" href="{{ app_url_domain }}/css/ie9.css" type="text/css" />
+        <![endif]-->
+        <link rel="stylesheet" href="{{ app_url_domain }}/dist/semantic.css" type="text/css" />
+        <link rel="stylesheet" href="{{ app_url_domain }}/css/resp.css" type="text/css" />
+        <link rel="stylesheet" href="{{ app_url_domain }}/css/flexslider.css" type="text/css" />
+        <link rel="stylesheet" href="{{ app_url_domain }}/css/base.css" type="text/css" />
+		<style type="text/css">
+			@font-face {
+			  font-family: 'FontAwesome';
+			  src: url('{{ app_url_domain }}/fonts/fontawesome-webfont2.eot');
+			  src: url('{{ app_url_domain }}/fonts/fontawesome-webfont2.eot?#iefix') format('embedded-opentype'), url('{{ app_url_domain }}/fonts/fontawesome-webfont2.woff') format('woff'), url('{{ app_url_domain }}/fonts/fontawesome-webfont2.ttf') format('truetype'), url('{{ app_url_domain }}/fonts/fontawesome-webfont2.svg?#fontawesomeregular') format('svg');
+			  font-weight: normal;
+			  font-style: normal;
+			}
+		</style>
+		{% block layout_css %}{% endblock %}
+		{% block page_css %}{% endblock %}
+        <!--把jquery放到body之前-->
+		<script type="text/javascript" src="{{ app_url_domain }}/js/jquery-2.1.0.js"></script>
+        <!--需要body之前加载的js-->
+        {% block before_layout_js %}{% endblock %}
+	</head>
+	
+	<body>
+	    {% block layout_header %}
+            {% include "block/header.html" %}
+        {% endblock %}
+	    {% block layout_content %}
+            <div id="ajax-note"></div>
+	        {% block content %}{% endblock %}
+	    {% endblock %}
+		{% block layout_footer %}
+            {% include "block/footer.html" %}
+		{% endblock %}
+        
+		<script type="text/javascript" src="{{ app_url_domain }}/dist/semantic.min.js"></script>
+		<!--[if lt IE 9]>
+			<script src="{{ app_url_domain }}/js/html5.js" type="text/javascript"></script>
+            <script src="{{ app_url_domain }}/js/excanvas.js" type="text/javascript"></script>
+		<![endif]-->
+		<!--[if lte IE 9]>
+		    <script src="{{ app_url_domain }}/js/ie9.js" type="text/javascript"></script>
+		 <![endif]-->
+		<!--[if lte IE 8]>
+		    <script src="{{ app_url_domain }}/js/html5shiv.min.js" type="text/javascript"></script>
+		 <![endif]-->
+        <script src="{{ app_url_domain }}/js/jquery.livequery.min.js" type="text/javascript"></script>
+        <script src="{{ app_url_domain }}/js/jquery.form.js" type="text/javascript"></script>
+        <script src="{{ app_url_domain }}/js/jquery.taconite.js" type="text/javascript"></script>
+        <script src="{{ app_url_domain }}/js/jquery.bar.js" type="text/javascript"></script>
+        <script src="{{ app_url_domain }}/js/mustache.js" type="text/javascript"></script>
+        <script src="{{ app_url_domain }}/js/jquery.fineuploader-3.5.0.min.js" type="text/javascript"></script>
+        <script src="{{ app_url_domain }}/js/jquery.flexslider.js" type="text/javascript"></script>
+        <script src="{{ app_url_domain }}/js/scrolltopcontrol.js" type="text/javascript"></script>
+        <script src="{{ app_url_domain }}/js/sher.js" type="text/javascript"></script>
+		
+		{% block layout_js %}{% endblock %}
+        
+		{% block page_js %}{% endblock %}
+        
+		{% block private_js %}{% endblock %}
+		<script type="text/javascript">
+		<!--
+		$(function(e){
+			sher.url = {
+				domain: '{{ app_url_domain }}',
+        		css: '{{ app_url_css}}',
+        		js: '{{ app_url_js}}',
+        		images: '{{ app_url_images}}',
+				app_url_action_base: '{{ app_url_action_base }}'
+			};
+			
+			sher.visitor = {{ visitor_json }};
+			
+    		sher.initial();
+            
+            $('#wechat').click(function(){
+                $('.ui.wechat.modal').modal('show');
+                return false;
+            });
+            
+    		{% block layout_jquery %}{% endblock %}
+    		{% block jquery %}{% endblock %}
+		});
+		//-->
+		</script>
+	</body>
+</html>

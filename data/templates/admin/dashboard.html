@@ -1,0 +1,103 @@
+{%extends 'layout/admin.html'%}
+{% block page_css %}
+<style type="text/css">
+	.ui.table .unit {
+		
+	}
+	.attribute {
+		margin-top: 0.5em;
+	}
+</style>
+{% endblock %}
+
+
+{% block content %}
+    <h3 class="ui header">概况统计</h3>
+    
+    <div class="ui horizontal clearfix segments">
+        <div class="ui segment">
+            <div class="ui red statistic">
+                <div class="value">
+                    {{ sitedata.users_count|default 0 }}
+                </div>
+                <div class="label">
+                    注册用户
+                </div>
+            </div>
+        </div>
+        <div class="ui segment">
+            <div class="ui teal statistic">
+                <div class="value">
+                    {{ sitedata.products_count|default 0 }}
+                </div>
+                <div class="label">
+                    产品
+                </div>
+            </div>
+        </div>
+        <div class="ui segment">
+            <div class="ui green statistic">
+                <div class="value">
+                    {{ sitedata.orders_count|default 0 }}
+                </div>
+                <div class="label">
+                    有效订单
+                </div>
+            </div>
+        </div>
+    </div>
+    
+	<h3 class="ui header">最新15个订单</h3>
+	{% order_list var:'orders' page:1 size:15 %}
+
+	<table class="ui table">
+		<thead>
+			<tr>
+				<th>订单号</th>
+				<th>订单金额</th>
+				<th>收货人</th>
+				<th>下单时间</th>
+				<th>状态</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for order in orders.rows %}
+			<tr>
+				<td>
+					<a href="{{ app_url_admin }}/orders/show?rid={{ order.rid }}" class="ui magenta link" target="_blank">
+						{{ order.rid }}
+					</a>
+					
+				</td>
+				<td>
+					<small class="unit">￥</small><span class="count">{{ order.pay_money }}</span> <span>({{ order.items_count }}件)</span>
+					
+				</td>
+				<td>
+					{% if order.from_site == 5 %}
+						{{ order.express_info.name }}
+						<div class="attribute">
+							<span class="category">{{ order.express_info.phone }}</span>
+						</div>
+					{% else %}
+			      		{{ order.addbook.name|default '太火鸟用户' }}
+						<div class="attribute">
+							<span class="category">{{ order.addbook.phone }} </span>
+						</div>
+					{% endif %}
+				</td>
+				<td>
+					{{ order.created_on|date 'y-m-d H:i' }}
+				</td>
+				<td>
+					{{ order.status_label }}
+				</td>
+			</tr>
+			{% else %}
+			<tr>
+				<td colspan="5">没有相关订单</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+{% endblock %}

@@ -1,0 +1,16 @@
+/*******************************
+          Responsive
+*******************************/
+@media only screen and (min-width: 1280px) {
+    .ui.responsive.grid {
+        width: 1280px;
+        margin: 0 auto;
+    }
+}
+
+@media only screen and (max-width: 767px) {
+    .ui.responsive.grid {
+        width: 100%;
+        margin: 0 auto;
+    }
+}

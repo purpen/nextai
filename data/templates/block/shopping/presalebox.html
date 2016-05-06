@@ -1,0 +1,49 @@
+<div class="ui small presale modal" id="presale-form-box">
+  	<i class="close icon"></i>
+	<div class="ui header">
+    	预售项设置
+  	</div>
+	<div class="container">
+		<form action="{{ app_url_product }}/ajax_presale" class="ui form" method="post" id="presale-form">
+		  	<div class="content">
+				<input type="hidden" name="r_id" value="{{ presale._id }}" />
+				<input type="hidden" name="product_id" value="{{ product._id }}" />
+				
+				<div class="two fields">
+					<div class="field">
+						<label>名称</label>
+					  	<input type="text" name="name" value="{{ presale.name }}" />
+					</div>
+					<div class="field">
+					  	<label>产品型号/颜色</label>
+						<input type="text" name="mode" value="{{ presale.mode }}" />
+					</div>
+				</div>
+				<div class="two fields">
+					<div class="field">
+					  	<label>限额数量</label>
+						<input type="text" name="limited_count" value="{{ presale.limited_count }}" />
+					</div>
+					<div class="field">
+					  	<label>产品数量(如不限量，请设置>100000数值)</label>
+						<input type="text" name="quantity" value="{{ presale.quantity }}" />
+					</div>
+				</div>
+				<div class="field">
+				  	<label>预售价</label>
+					<input type="text" name="price" value="{{ presale.price }}"  />
+				</div>
+				<div class="field">
+					<label>简述</label>
+					<textarea name="summary" class="small">{{ presale.summary }}</textarea>
+				</div>
+				
+				<div class="field">
+					<div class="ui active magenta submit button">确定</div>
+			        <div class="ui gray cancel button">取消</div>
+				</div>
+				
+			</div>				
+		</form>
+	</div>
+</div>

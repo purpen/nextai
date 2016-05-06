@@ -1,0 +1,128 @@
+{%extends 'layout/admin.html'%}
+{% block title %}编辑网点-{% endblock %}
+{% block page_css %}
+    <link rel="stylesheet" href="{{ app_url_packaged }}/css/fineuploader-3.5.0.css" type="text/css" />
+    <style type="text/css">
+        
+    </style>
+{% endblock %}
+
+{% block jquery %}
+	$('#estore-form').form({
+		name: {
+			identifier  : 'name',
+			rules: [
+				{
+					type   : 'empty',
+					prompt : '网点名称不能为空'
+				}
+			]
+		}
+	}, {
+		inline : true,
+		onSuccess: function(event){
+			event.preventDefault();
+			$(this).ajaxSubmit({
+				dataType: 'json',
+				beforeSubmit: function(){
+					sher.before_submit();
+				},
+				success: function(data){
+					sher.after_submit();
+					
+					if(data.is_error){
+						$(event.target).addClass('error');
+						sher.show_error_note(data.message, 3000);
+					}else{
+						sher.redirect(data.redirect_url);
+					}
+				}
+			});
+		}
+	});
+{% endblock %}
+
+{% block content %}
+<div class="admin">
+	<h3 class="ui header">网点管理</h3>
+	
+	<div class="ui secondary pointing magenta menu">
+		<a href="{{ app_url_admin_base }}/estore" class="item">
+			<i class="list icon"></i> 全部网点
+		</a>
+	  	<div class="right menu">
+			{% if mode == 'edit' %}
+			<div class="active item">
+				<i class="edit icon"></i> 编辑网点
+			</div>
+			{% endif %}		
+			<a href="{{ app_url_admin_base }}/estore/edit" class="active item">
+				<i class="add icon"></i> 新增网点
+			</a>
+	    </div>
+	</div>
+	
+	<form action="{{ app_url_admin_base }}/estore/save?page={{ page }}" class="ui form" method="post" id="estore-form">
+		<input type="hidden" name="_id" value="{{ estore._id }}" />
+		<input type="hidden" name="file_id" value="{{ editor_pid }}" id="file_id" />
+		
+		<div class="ui segment">
+			<h4 class="ui dividing header">基本信息</h4>
+			
+            <div class="two fields">
+    			<div class="field">
+    				<label for="name">网点名称</label>
+    			  	<input type="text" name="name" value="{{ estore.name }}" />
+    			</div>
+                
+    			<div class="field">
+    				<label for="domain">所属地区：</label>
+                    <select class="ui dropdown" name="city_id">
+                      {% for g in provinces %}
+                      <option value="{{ g._id }}">{{ g.city }}</option>
+                      {% endfor %}
+                    </select>
+    			</div>
+            </div>
+            <div class="two fields">
+    			<div class="field">
+    				<label>网点地址</label>
+                    <input type="text" name="address" id="address" value="{{ estore.address }}" />
+    			</div>
+    			<div class="field">
+    				<label for="worktime">营业时间</label>
+    			  	<input type="text" name="worktime" value="{{ estore.worktime }}" />
+    			</div>
+            </div>
+			
+            <div class="three fields">
+    			<div class="field">
+    				<label for="phone">联系电话</label>
+    			  	<input type="text" name="phone" value="{{ estore.phone }}" />
+    			</div>
+    			<div class="field">
+    				<label for="mobile">联系手机</label>
+    			  	<input type="text" name="mobile" value="{{ estore.mobile }}" />
+    			</div>
+    			<div class="field">
+    				<label for="fax">传真</label>
+    			  	<input type="text" name="fax" value="{{ estore.fax }}" />
+    			</div>
+            </div>
+			
+        </div>
+	    
+		<div class="ui grid">
+			<div class="column">
+				<div class="ui large red submit inverted button">
+					确认提交
+				</div>
+				<div class="ui large grey cancel inverted button">
+					取消
+				</div>
+			</div>
+		</div>
+		
+	</form>
+</div>
+{% endblock %}

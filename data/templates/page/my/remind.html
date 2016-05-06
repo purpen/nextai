@@ -1,0 +1,146 @@
+{%extends 'layout/column.html'%}
+{% block title %}我的提醒-{% endblock %}
+{% block page_css %}
+<style class="text/css">
+	.remind .ui.list .item {
+		cursor: auto;
+		border-bottom: 1px solid rgba(0,0,0,.1);
+		position: relative;
+        text-align: left;
+	}
+    .remind .ui.list .item .header {
+        margin-bottom: 10px;
+    }
+	.remind .ui.list .item .content {
+		margin-left: 0%;
+		margin-right: 0;
+		display:inline-block;
+        font-size: 14px;
+	}
+	
+	.remind .content >.inline{
+		display:inline-block;
+		line-height: 33px;
+		margin:0 8px;
+	}
+	.remind .description.fsize{
+		font-size: 15px;
+		color: rgba(0,0,0,.7);
+	}	
+  .content .text img{
+    max-width: 150px;
+    max-height: 800px;
+    overflow: hidden;
+    padding: 10px 10px 0 0;
+  }
+</style>
+{% endblock %}
+
+{% block jquery %}
+
+  // 查看大图
+  phenix.comment_blow_up_img();
+	
+{% endblock %}
+{% block content %}
+<div class="section breadcrumb">
+	<div class="ui responsive grid">
+		<div class="row">
+			<div class="column">
+				<div class="ui medium breadcrumb">
+				  	<a class="ui section link" href="{{ app_url_domin }}">
+						<i class="home icon"></i> 首页
+					</a>
+                    <i class="angle right icon divider"></i>
+				  	<a class="ui section link" href="{{ app_url_my }}">
+						个人中心
+					</a>
+					<i class="angle right icon divider"></i>
+					<div class="active section">消息提醒</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="account remind">
+	<div class="ui responsive grid">
+		<div class="four wide column">
+			{% include "block/user/sub_menu_center.html" %}
+		</div>
+		<div class="twelve wide column">
+			<h2 class="ui header">消息提醒</h2>
+			{% include "block/center/head_notice_nav.html" %}
+			
+			<div class="ui alarm segment">
+                {% remind_list var:'list' page:page user_id:user_id size:20 set_readed:1 %}
+                    {% if list.rows %}
+                        {% for d in list.rows %}
+                            {% if d.target %}
+                            <div class="mes-text">
+                                <a href="{{ d.s_user.home_url }}" class="ui photo" target="_blank">
+                                    <img alt="{{ d.s_user.nickname }}" src="{{ d.s_user.small_avatar_url }}">
+                                </a>
+                                <div class="news content">
+                                  <a class="ui link" href="{{ d.s_user.home_url }}" target="_blank">{{ d.s_user.nickname }}</a>
+                                  {% if d.evt==12 %}
+                                    在评论中提到了你
+                                  {%else%}
+                                     {{ d.info }}<span>{{ d.kind_str }}</span> 
+                                  {%endif%}
+                                    <span class="date">{{ d.created_on|relative_datetime }}</span> {% if !d.is_read %}<span class="ui mini red label">NEW</span>{%endif%}
+                                    <div class="sub_header text">
+                                        {% if d.kind == 3 %}
+                                            <p class="text">
+                                                {{ d.target.content }}
+                                                <small>
+                                                  {% if d.comment_target.comment_type=='subject' %}
+                                                    <a class="ui link" href="{{ d.comment_target.comment_view_url }}?floor={{ d.target.floor }}#f{{ d.target.floor }}" target="_blank">查看原文</a>
+                                                  {%else%}
+                                                    <a class="ui link" href="{{ d.comment_target.comment_view_url }}/{{ d.target.floor }}#f{{ d.target.floor }}" target="_blank">查看原文</a>
+                                                  {%endif%}
+
+                                                </small>
+                                            </p>
+                                        {%else%}
+                                            <p>
+                                                <a class="ui link" href="{{ d.target.view_url }}" title="{{ d.target.title }}" target="_blank">
+                                                    {{ d.target.title }}
+                                                </a>
+		
+                                            </p>
+                                        {%endif%}
+                                    </div>
+                                </div>  
+                            </div>
+							{%else%}
+							<div class="mes-text">
+                                <a href="{{ d.s_user.home_url }}" class="ui photo" target="_blank">
+                                    <img alt="{{ d.s_user.nickname }}" src="{{ d.s_user.small_avatar_url }}">
+                                </a>
+                                <div class="news content">
+                                  <a class="ui link" href="{{ d.s_user.home_url }}" target="_blank">{{ d.s_user.nickname }}</a>
+                                     {{ d.info }}
+                                    <span class="date">{{ d.created_on|relative_datetime }}</span> {% if !d.is_read %}<span class="ui mini red label">NEW</span>{%endif%}
+                                    <div class="sub_header text"></div>
+                                </div>
+								<div class="sub_header text">
+                  {% if d.evt==16 %}说明：{%endif%}{% if d.evt==17 %}说明：{%endif%}{{ d.content }}
+								</div>
+                            </div>
+                            {%endif%}
+                        {%endfor%}
+                    {%endif%}
+                    
+                {% if list.rows %}
+                    <div class="ui pagination">
+                        {% pager url:pager_url,total_rows:list.total_rows,total_page:list.total_page,current_page:page,var:'pager',pager_size:9 %}
+	            {%include 'block/pager.html'%}
+                    </div>
+                {% endif %}
+			</div>
+
+		</div>
+	</div>
+</div>
+{% endblock %}

@@ -1,0 +1,68 @@
+{%extends 'layout/board.html'%}
+{% block title %}设置头像-{% endblock %}
+{% block page_css %}
+<style class="text/css">
+.account .avatar {
+	min-height: 25em;
+}
+
+</style>
+{% endblock %}
+{% block js %}
+{% endblock %}
+{% block jquery %}
+	
+{% endblock %}
+{% block content %}
+<div class="account profile">
+	<div class="ui responsive grid">
+		<div class="four wide column">
+			{% include "block/user/sub_menu.html" %}
+		</div>
+		<div class="twelve wide column">
+			<h2 class="ui header">设置头像</h2>
+			<div class="ui segment">
+				<form action="{{app_url_action_base}}/uploader/crop_avatar" method="post" class="form ajax-form" id="avatar-form">
+					<h2 class="ui dividing header">
+					  	<i class="flat pictures icon"></i>
+					  	<div class="content">
+					      	选择图片
+					      	<div class="sub header">设置一个宽度大于400px、JPG头像，让小伙伴们迅速认识你 :)</div>
+					  	</div>
+					</h2>
+					
+					<div class="ui grid">
+						<div class="row">
+							<div class="ten wide avatar column">
+								<div id="phenix-uploader"></div>
+								
+								<div id="avatar-preview" class="clearfix">
+									<div id="select-area"></div>
+								</div>
+							</div>
+							<div class="six wide column">
+								<div class="preview-box pull-left">
+									<div class="form-group ml-20 hide" id="avatar-crop-buttons">
+										<h5>你可以移动选区，选择最佳的角度秀自己！</h5>
+										<input type="hidden" name="avatar_id" id="avatar_id" />
+										<input type="hidden" name="x1" id="x1" />
+										<input type="hidden" name="x2" id="x2" />
+										<input type="hidden" name="y1" id="y1" />
+										<input type="hidden" name="y2" id="y2" />
+										<input type="hidden" name="w" id="w" />
+										<input type="hidden" name="h" id="h" />
+				
+										<div id="crop-avatar-box" class="row mb-15"></div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<input type="submit" class="ui magenta crop button hide" value="确认头像" />
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

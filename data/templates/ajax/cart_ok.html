@@ -1,0 +1,54 @@
+<taconite>
+	{% if action == 'delete' %}
+		<remove select="#cart-product-{{ sku }}" />
+		<remove select="#basket-product-{{ sku }}" />
+	{% endif %}
+	
+	{% if items_count == 0 %}
+	<replace select="#cart-body-content">
+		<div class="column" id="cart-body-content">
+			<h3 class="ui header">我的购物车</h3>
+			<div class="ui empty message">
+				<div class="ui big header">
+					<i class="cart icon"></i>
+					<div class="content">
+						<div class="sub header">还没找到喜欢的产品吗？<a href="{{ app_url_shop }}" class="ui magenta link">赶快去选购吧</a></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</replace>
+	<replace select="#basket-body-content">
+		<div class="item" id="basket-body-content">
+			<p>购物车中还没有商品，赶紧选购吧！</p>
+		</div>
+	</replace>
+	{% endif %}
+	
+	<eval>
+		{% if action == 'add' %}
+			sher.show_ok_note('已成功加入购物车', 2000);
+		{% endif %}
+		
+		{% if action == 'delete' %}
+			sher.show_ok_note('已成功从购物车删除', 2000);
+		{% endif %}
+		
+		// 更新购物篮
+		{% if items_count %}
+			$('.cart.item')
+				.find('.ui.label')
+				.removeClass('hide')
+				.text({{ items_count }});
+		{% else %}
+			$('.cart.item')
+				.find('.ui.label')
+				.addClass('hide')
+				.text({{ items_count }});
+		{% endif %}
+		
+		// 更新购物车
+		$('.cart-items-count').text({{ items_count }});
+		$('.cart-total-money').text({{ total_money }});
+	</eval>
+</taconite>

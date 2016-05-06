@@ -1,0 +1,14 @@
+<taconite>
+{% if is_error %}
+	<eval>
+		sher.show_error_note('{{ note }}', 3000);
+	</eval>
+{% else %}
+	<eval>
+		sher.show_ok_note('{{ note }}', 2000);
+	</eval>
+    {% for id in ids %}
+    <remove select="#{{ id }}" />
+    {% endfor %}
+{% endif %}
+</taconite>

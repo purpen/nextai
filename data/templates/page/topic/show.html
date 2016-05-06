@@ -1,0 +1,81 @@
+{%extends 'layout/base.html'%}
+
+{% block page_css %}
+<style type="text/css">
+.topiccate {
+    background-color: #f7f7f7;
+    margin: 0px auto 15px;
+}
+.topicpage {
+    margin: 0px auto 15px;
+}
+.content-box {
+    margin-bottom: 3rem;
+    padding: 0 8rem;
+    text-align: left;
+    overflow: hidden;
+}
+.content-box img.fr-fin {
+    box-sizing: content-box;
+    display: block;
+    margin: 0 auto;
+}
+.content-box img.fr-fin.fr-dib {
+    max-width: 100%;
+    padding: 10px 0;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="topiccate">
+    <div class="ui responsive grid">
+        <div class="row">
+            <div class="column">
+                <div class="ui breadcrumb">
+                    <a class="section" href="{{ app_url_domain }}">首页</a>
+                    <i class="right angle icon divider"></i>
+                    <a class="section">新闻中心</a>
+                    <i class="right angle icon divider"></i>
+                    <div class="active section">{{ topic.title }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="topicpage">
+    <div class="ui responsive grid">
+        <div class="row">
+            <div class="column">
+                <div class="content-box">
+    				<div class="ui header">
+    					<div class="content">
+                            {{ topic.title }}
+    						<div class="sub header attribute">
+    							<span class="category"><a href="{{ app_url_topic }}?cid={{ topic.category.id }}" class="ui link">{{ topic.category.name }}</a></span> | 
+    							<span class="date"><a class="ui link" href="{{ topic.user.home_url }}">{{ topic.user.nickname }}</a> 发表于 {{ topic.created_on|relative_datetime }}</span> | 
+                                  {% if topic.source %}
+                                  <span>来源: {{ topic.source }}</span> | 
+                                  {%endif%}
+    							<span class="count">浏览数: {{ topic.view_count }}</span>
+    						</div>
+    					</div>
+    				</div>
+                    
+                    <div class="froala-element desc">
+                        {{ topic.description }}
+                    </div>
+                    
+                    <div class="tags">
+                        {% for t in topic.tags %}
+                        <div class="ui tag label">{{ t }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div> 
+</div>
+{% endblock %}

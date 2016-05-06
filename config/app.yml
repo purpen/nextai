@@ -1,0 +1,171 @@
+---
+app.id: 'sher'
+app.version: '2.0'
+app.modules.boot: 'sher'
+
+app.modules.sher: 
+  state: 'on'
+  namespace: 'Sher_App'
+  index_action: 'Index'
+  
+app.modules.admin: 
+  state: 'on'
+  namespace: 'Sher_Admin'
+  index_action: 'Console'
+
+app.dispatcher.routes:
+app.dispatcher.result.map:
+  redirect: 'Doggy_Dispatcher_Result_Redirect'
+  json: 'Doggy_Dispatcher_Result_Json'
+  file: 'Doggy_Dispatcher_Result_File'
+  raw: 'Doggy_Dispatcher_Result_Raw'
+  jquery: 'Doggy_Dispatcher_Result_JQuery'
+  dt: 'DoggyX_View_HtmlPage'
+  html: 'DoggyX_View_HtmlPage'
+  taconite: 'DoggyX_View_TaconitePage'
+  rss: 'DoggyX_View_RssPage'
+  mongofs: 'DoggyX_View_MongoFs'
+
+app.dispatcher.interceptors.run:
+  - Doggy_Dispatcher_Interceptor_Parameters
+  - Doggy_Dispatcher_Interceptor_UploadSupport
+  - Sher_Core_Interceptor_XSession
+  - DoggyX_Interceptor_BeforeInvoke
+
+app.session.ttl: 1800
+app.session.service: 'Sher_Core_Session_Service'
+app.session.engine: 'DoggyX_Session_Engine_Mongo'
+app.session.online_ttl: 600
+app.session.engine.options:
+   # mongodb session optional:
+   'collection': 'session'
+app.session.sid: 'nextai_sid'
+#auth cookie:
+app.session.auth_sid: 'nextai_asid'
+# session secret key
+app.session.secret_key: 'Frbird#2015Up'
+
+# 序列编号表
+app.serialno.name: 'serialno'
+
+app.mongodb_host: 'mongodb://127.0.0.1'
+app.mongodb_rs: false
+# mongodb
+app.mongo.default:
+  host: '127.0.0.1'
+  db: 'nextai'
+  replicaSet: false
+  
+# redisdb
+#app.redis_host: 'localhost:6379'
+
+app.dt.extension_lib.sher_app:
+  tags:
+    'category_list':'Sher_Core_ViewTag_CategoryList'
+    'product_list':'Sher_App_ViewTag_ProductList'
+    'topic_list':'Sher_Core_ViewTag_TopicList'
+    'asset_list':'Sher_App_ViewTag_AssetList'
+    'estore_list':'Sher_Core_ViewTag_EstoreList'
+    'comment_list':'Sher_App_ViewTag_CommentList'
+    'addbooks_list':'Sher_Core_ViewTag_AddBooksList'
+    'order_list':'Sher_Core_ViewTag_OrderList'
+    'search_list':'Sher_App_ViewTag_SearchList'
+    'user_list':'Sher_App_ViewTag_UserList'
+    'sku_list':'Sher_Core_ViewTag_SkuList'
+    'bonus_list':'Sher_Core_ViewTag_BonusList'
+    'tags_list':'Sher_App_ViewTag_TagsList'
+    'ad_list':'Sher_Core_ViewTag_AdList'
+    'space_list':'Sher_Core_ViewTag_SpaceList'
+    'cake_list':'Sher_App_ViewTag_CakeList'
+    'message_list':'Sher_App_ViewTag_MessageList'
+    'notice_list':'Sher_Core_ViewTag_NoticeList'
+    'pager':'Sher_App_ViewTag_Pager'
+    'point_record_list':'Sher_Core_ViewTag_PointRecordList'
+    'event_record_list':'Sher_Core_ViewTag_EventRecordList'
+    'point_balance_list':'Sher_Core_ViewTag_PointBalanceList'
+    'province_list':'Sher_Core_ViewTag_ProvinceList'
+    'city_list':'Sher_Core_ViewTag_CityList'
+    'area_list':'Sher_Core_ViewTag_AreaList'
+    'timeline_list':'Sher_Core_ViewTag_TimelineList'
+    'gift_list':'Sher_Core_ViewTag_GiftList'
+    'friend_link_list':'Sher_Core_ViewTag_FriendLinkList'
+    'tag_list':'Sher_Core_ViewTag_TagList'
+  filters: []
+
+app.js.use_bundle: false
+app.css.use_bundle: false
+
+# Qiniu API
+app.qiniu.key: 'ERh7qjVSy0v42bQ0fftrFeKYZG39XbzRlaJO4NFy'
+app.qiniu.secret: 'r-NUrKsnRBEwTQxbLONVrK9tPuncXyHmcq4BkSc7'
+app.qiniu.bucket: 'frbird'
+
+app.keychains.private: 'xxxxOOOOxxxx'
+app.email.from:
+  address: 'no-reply@microlab.com'
+  name: '系统邮件服务'
+
+# 微信服务号配置信息
+
+# 微信Token(令牌)
+app.wechat.token: '5382021d5771db562c1ce1de'
+# 微信APPID：绑定支付的APPID（必须配置，开户邮件中可查看）
+app.wechat.app_id: 'wx75a9ffb78f202fb3'
+# 微信APPSECRET：公众帐号secert（仅JSAPI支付的时候需要配置， 登录公众平台，进入开发者中心可设置）
+app.wechat.app_secret: 'f80ae853ef243f66284ad13781cb69de'
+# 微信MCHID：商户号（必须配置，开户邮件中可查看）
+app.wechat.partner_id: '1219487201'
+
+# 两个未知配置参数(待考证)
+app.wechat.partner_key: '8db453c4e80d0c28aa5b4664e22ea013'
+app.wechat.paysign_key: 'ArioxptbBJu25ANvabeBqavpE7diWUfTtDu1FCkt66Ojdzb1N3ajKoGAX3xdT3GIsj7C8g1pglSBVqaUNrqsoz5vfiASYrinEL4bAvuhTBgs1ZrdX7gJNgx8qgHBG0V4'
+
+# 微信支付
+
+# KEY：商户支付密钥，参考开户邮件设置（必须配置，登录商户平台自行设置）
+app.wechat.key: '9E0530C588C8003395A929B0B94AC46B'
+# 异步通知url
+app.wechat.notify_url: ''
+# TODO：设置商户证书路径
+app.wechat.sslcert_path: '/opt/project/phenix/vendor/wechat_cert/apiclient_cert.pem'
+app.wechat.sslkey_path: '/opt/project/phenix/vendor/wechat_cert/apiclient_key.pem'
+app.wechat.rootca: '/opt/project/phenix/vendor/wechat_cert/rootca.pem'
+# TODO：这里设置代理机器，只有需要代理的时候才设置，不需要代理，请设置为0.0.0.0和0
+app.wechat.proxy_host : "0.0.0.0"
+app.wechat.proxy_post : 0
+# TODO：接口调用上报等级，默认紧错误上报（注意：上报超时间为【1s】，上报无论成败【永不抛出异常】
+app.wechat.report_levenl : 1
+
+# 微信订阅号token
+#app.wechat.token: '5382ebad0c28aab443bfe3c7'
+#app.wechat.app_id: 'wx4cf88d6bf30430db'
+#app.wechat.app_secret: '795ff8ca3d4a57ae645e4d217c193988'
+
+# 财付通
+app.tenpay.partner: '1220172801'
+app.tenpay.key: 'c61bea76f78ee72048aaa6570ad36ab3'
+
+# 附件存储目录
+app.storage.sher:
+    class:'Doggy_Storage_Provider_FileSystem'
+    options:
+        root:"/Users/xiaoyi/data/uploads"
+        root_url:'http://img.taihuoniao.me'
+        hash_dir:false
+
+# 图片缩络图
+app.asset.thumbnails:
+	mini: 120x120
+	medium: 320x240
+	large: 580x435
+	big: 780x525
+    
+app.asset.avatars:
+  big: 360
+  medium: 180
+  small: 100
+  mini: 50
+  
+app.word.filter:
+  seword: tmd|sex|色情|妈的|奶奶的|日你|TNND|她娘的
+

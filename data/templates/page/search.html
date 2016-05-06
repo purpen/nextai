@@ -1,0 +1,61 @@
+{%extends 'layout/base.html'%}
+{% block title %}{{q|default '搜索'}}-{% endblock %}
+
+{% block content %}
+<section class="search banner">
+	<div class="ui responsive center aligned grid">
+		<div class="row">
+			<div class="twelve wide column">
+                <form class="ui form" action="{{ app_url_search }}" method="post">
+                    <h4 class="block title">高级搜索</h4>
+                    <div class="ui icon input">
+                        <input type="text" value="{{ q }}" name="q" placeholder="请输入关键词">
+                        <i class="search icon"></i>
+                    </div>
+                </form>
+			</div>
+		</div>
+    </div>
+</section>
+
+<div class="shoplist" id="searchpage">
+	<div class="ui responsive grid">
+		<div class="row">
+			<div class="column">
+                {% search_list var:'products' page:page size:12 search_word:q %}
+                {% if products.rows %}
+                <div class="ui three cards">
+                    {% for product in products.rows %}
+                    <div class="card">
+                        <a href="{{ product.view_url }}" title="{{ product.title }}" class="image">
+                            <img src="{{ product.cover.thumbnails.large.view_url }}" />
+                        </a>
+                    
+                        <div class="content">
+                            <h4 class="title">
+                                <a href="{{ product.view_url }}" title="{{ product.title }}">{{ product.title }}</a>
+                            </h4>
+                            <p class="advantage">{{ product.advantage }}</p>
+                            <p class="price">RMB {{ product.sale_price }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="ui message">
+                    <p>你没有输入足够的关键词，或没有匹配的查询结果！</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% if products.total_page > 1 %}
+        <div class="row">
+            <div class="center aligned column">
+        		{% pager url:pager_url,total_rows:products.total_rows,total_page:products.total_page,current_page:page,var:'pager',pager_size:9 %}
+        		{%include 'block/pager.html'%}
+            </div>
+        </div>
+        {% endif %}
+	</div>
+</div>
+{% endblock %}

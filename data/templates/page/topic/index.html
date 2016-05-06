@@ -1,0 +1,83 @@
+{%extends 'layout/base.html'%}
+
+{% block page_css %}
+<style type="text/css">
+.topiccate {
+    background-color: #f7f7f7;
+    margin: 0px auto 15px;
+}
+.topiclist {
+    margin: 0px auto 15px;
+}
+.ui.cards > .card > .content {
+    padding: 15px 20px;
+}
+.ui.cards > .card .title {
+    margin-bottom: 5px;
+}
+.ui.cards > .card > .content > .advantage {
+    color: #7d7d7d;
+    margin-bottom: 5px;
+}
+.ui.cards > .card .price {
+    color: #d65454;
+    font-size: 16px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="topiccate">
+    <div class="ui responsive grid">
+        <div class="row">
+            <div class="four wide column">
+                <h4 class="ui header">新闻中心</h4>
+            </div>
+            <div class="twelve wide right aligned column">
+                <div class="ui horizontal list">
+                    {% for g in groups %}
+                    <a href="{{ app_url_action_base }}/topic?cid={{ g.id }}" class="{% if g.id == cid %}active{% endif %} item">{{ g.name }}</a>
+                    {% endfor %}
+                </div>
+               
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="topiclist">
+    <div class="ui responsive grid">
+        <div class="row">
+            <div class="column">
+                {% topic_list var:'topics' category_id:cid page:page size:12 published:1 %}
+                <div class="ui three cards">
+                    {% if topics.rows %}
+                        {% for topic in topics.rows %}
+                        <div class="card">
+                            <a href="{{ topic.view_url }}" title="{{ topic.title }}" class="image">
+                                <img src="{{ topic.cover.thumbnails.large.view_url }}" />
+                            </a>
+                        
+                            <div class="content">
+                                <h4 class="title">
+                                    <a href="{{ topic.view_url }}" title="{{ topic.title }}">{{ topic.title }}</a>
+                                </h4>
+                                <p class="advantage">{{ topic.strip_description }}</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% if topics.total_page > 1 %}
+        <div class="row">
+            <div class="center aligned column">
+        		{% pager url:pager_url,total_rows:topics.total_rows,total_page:topics.total_page,current_page:page,var:'pager',pager_size:9 %}
+        		{%include 'block/pager.html'%}
+            </div>
+        </div>
+        {% endif %}
+    </div> 
+</div>
+{% endblock %}

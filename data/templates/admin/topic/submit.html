@@ -1,0 +1,275 @@
+{%extends 'layout/admin.html'%}
+{% block page_css %}
+	<link rel="stylesheet" href="{{ app_url_packaged }}/css/froala_editor.min.css" type="text/css" />
+    <link rel="stylesheet" href="{{ app_url_packaged }}/css/fineuploader-3.5.0.css" type="text/css" />
+    <style type="text/css">
+        .active.category {
+            background-color: rgb(255, 51, 0) !important;
+            color: rgb(255, 255, 255) !important;
+        }
+        #product-skus {
+            margin-bottom: 0.5em;
+        }
+        .ui.link.active {
+            color: rgb(255, 51, 102);
+        }
+    </style>
+{% endblock %}
+
+{% block layout_js %}
+    <script type="text/javascript" src="{{ app_url_packaged }}/js/froala_editor.min.js"></script>
+{% endblock %}
+
+{% block jquery %}
+	$('#topic-form').form({
+		title: {
+			identifier  : 'title',
+			rules: [
+				{
+					type   : 'empty',
+					prompt : '标题不能为空'
+				},
+				{
+					type   : 'maxLength[75]',
+					prompt : '标题最多75个字符'
+				}
+			]
+		},
+		description: {
+			identifier  : 'description',
+			rules: [
+				{
+					type   : 'empty',
+					prompt : '详细内容不能为空'
+				}
+			]
+		}
+	}, {
+		inline : true,
+		onSuccess: function(event){
+			event.preventDefault();
+			$(this).ajaxSubmit({
+				dataType: 'json',
+				beforeSubmit: function(){
+					sher.before_submit();
+				},
+				success: function(data){
+					if(data.is_error){
+					    sher.after_submit();
+						$(event.target).addClass('error');
+						sher.show_error_note(data.message, event.target);
+					}else{
+						sher.redirect(data.redirect_url);
+					}
+				}
+			});
+		}
+	});
+	
+	var file_count = 1;
+	var ord = function(){
+		return file_count++;
+	};
+
+	$('#editor').editable({
+		inlineMode: false,
+        language: "zh_cn",
+		toolbarFixed: false,
+        theme: 'gray',
+		language: 'zh_cn',
+		borderColor: '#999',
+		editorClass: 'frbird',
+		minHeight: 450,
+		plainPaste: true,
+		alwaysBlank: true,
+		typingTimer: 5000,
+		imageMargin: '20px',
+		{% if mode == 'edit' %}
+		defaultImageTitle: '{{ topic.title }}',
+		{% else %}
+		defaultImageTitle: '太火鸟',
+		{% endif %}
+		buttons: ["bold", "italic", "underline","strikeThrough", "fontSize", "color", "sep", "align", "insertOrderedList", "insertUnorderedList", "outdent", "indent", "sep", "createLink", "insertImage", "insertVideo", "insertHorizontalRule", "undo", "redo", "selectAll", "html", "fullscreen"],
+		imageUploadURL: "{{ app_url_upload_pictures }}",
+		imageUploadParams: {'x:pid': '{{ pid }}', 'x:domain': '{{ domain }}', 'x:ord': file_count, 'x:user_id': {{ visitor._id }},'x:asset_type': {{ asset_type }},'x:parent_id': '{{ topic._id }}','file_id': '{{ pid }}', 'editor_domain': '{{ domain }}', 'editor_asset_type': '{{ editor_asset_type }}'},
+		defaultImageWidth: '',
+		maxImageSize: 1024 * 1024 * 5, // 5M
+		imageDeleteURL: '{{ app_url_action_base }}/asset/delete_from_editor',
+	}).on('editable.imageInserted',  function (e, editor, imageURL) {
+		// 记录插入图片数
+		$('#file_count').val(file_count);
+		
+		file_count++;
+    }).on('editable.imageError', function (e, editor, error) {
+      if (error.code == 5){
+        error.message = '图片太大，请选择小于5M！';
+      }
+      sher.show_error_note(error.message, 5000);
+    });
+    
+	$('#phenix-uploader').fineUploader({
+		debug: true,
+      	request: {
+			inputName:'file',
+			params: {'x:pid': '{{ pid }}', 'x:domain': '{{ domain }}', 'x:ord': ord, 'x:user_id': {{ visitor._id }},'x:asset_type': {{ asset_type }},'x:parent_id': '{{ topic._id }}','file_id': '{{ pid }}' },
+        	endpoint: '{{ app_url_upload_topic }}'
+      	},
+		text: {
+            uploadButton: '<a class="ui active red labeled inverted icon upload button" href="javascript:void(0);"><i class="cloud upload icon"></i>选择图片</a>'
+		},
+		template: '<div class="qq-uploader">' +
+					'<pre class="qq-upload-drop-area"><span>{dragZoneText}</span></pre>' +
+					'<div class="qq-upload-button">{uploadButtonText}</div>' +
+					'<span class="qq-drop-processing"><span>{dropProcessingText}</span><span class="qq-drop-processing-spinner"></span></span>' +
+					'<ul class="qq-upload-list clearfix" style="margin-top: 5px; text-align: center;"></ul>' +
+					'</div>',
+		validation: {
+	        allowedExtensions: ['jpeg', 'jpg', 'png'],
+	        sizeLimit: 3145728 // 3M = 3 * 1024 * 1024 bytes
+	    }
+    }).on('complete', function (event, id, name, result) {
+		if(result.is_error){
+			$('#topic-upload-form').addClass('error');
+			sher.show_error_message(result.message);
+		}else{
+			$('.qq-upload-list').children().eq(id).fadeOut();
+			
+			$.get('{{ app_url_action_base }}/uploader/check_upload_assets', {'id': '{{ topic._id }}', 'assets': result.data.ids });
+		}
+	});
+	
+	// 设置封面图
+	$('#asset-list .ajax-cover').livequery(function(){
+		$(this).click(function(){
+			$this = $(this);
+			var id = $(this).attr('data-value');
+			
+			$('#asset-list .ajax-cover.active').removeClass('active');
+			$(this).addClass('active');
+			
+			$('#topic_cover_id').val(id);
+            
+			return false;
+		});
+	});
+
+{% endblock %}
+
+{% block content %}
+	<h3 class="ui header">新闻列表</h3>
+	
+	<div class="ui secondary pointing magenta clearfix menu">
+		<a href="{{ app_url_admin_base }}/topic" class="active item">
+			全部列表
+		</a>
+	  	<div class="right menu">
+			<a href="{{ app_url_admin_base }}/topic/submit" class="active item">
+				<i class="edit icon"></i> 新增新闻
+			</a>
+	    </div>
+	</div>
+	<div class="ui segment">
+		<form action="{{ app_url_admin_base }}/topic/save" class="ui form" method="post" id="topic-form">
+			<input type="hidden" name="_id" value="{{ topic._id }}" id="topic_id" />
+			<input type="hidden" name="file_id" value="{{ editor_pid }}" id="file_id" />
+			<input type="hidden" name="file_count" id="file_count" />
+			<input type="hidden" name="published" value="1" />
+            <input type="hidden" name="newadd_asset_ids" id="newadd_asset_ids" />
+			
+			<div class="field">
+				<label for="title">标题</label>
+			  	<input type="text" name="title" value="{{ topic.title }}" />
+			</div>
+
+			<div class="three fields">
+    			<div class="field">
+    				<label>类别</label>
+    				<div class="ui selection dropdown">
+    					<input type="hidden" name="category_id" value="{{ topic.category_id }}" />
+                        <i class="dropdown icon"></i>
+    				    <div class="default text">请选择</div>
+    				    <div class="menu">
+    						{% for g in groups %}
+    						<div data-value="{{ g.id }}" class="{% if g.id == topic.category_id %}active {% endif %}item">{{ g.name }}</div>
+    						{% endfor %}
+    				    </div>
+    				</div>
+    			</div>
+                
+			    <div class="field">
+				  <label for="t_color">属性</label>
+				<div class="ui fluid selection dropdown">
+				  <input type="hidden" name="attrbute" value="{{ topic.attrbute|default 0 }}" />
+					<div class="default text">请选择</div>
+					<i class="dropdown icon"></i>
+					<div class="menu" style="z-index:9999;">
+					  <div data-value="0" class="{% if topic.attrbute == 0 %}active {% endif %}item">--请选择--</div>
+					  <div data-value="1" class="{% if topic.attrbute == 1 %}active {% endif %}item">原创</div>
+					  <div data-value="2" class="{% if topic.attrbute == 2 %}active {% endif %}item">转载</div>
+					</div>
+				  </div>
+			  </div>
+
+			  <div class="field">
+				<label for="title">来源</label>
+				  <input type="text" name="source" value="{{ topic.source|default '麦博官网' }}" />
+			  </div>
+			</div>
+
+			<div class="field">
+				<label for="description">话题内容</label>
+			  	<textarea name="description" placeholder="此处需要输入详细内容..." id="editor">{{ topic.description }}</textarea>
+			</div>
+			
+			<div class="field">
+				<label>关键词</label>
+			  	<input type="text" name="tags" value="{{ topic.tags_s }}" />
+				<div class="ui pointing top label">
+					关键词之间使用，逗号隔开
+				</div>
+			</div>
+			
+			<div class="field">
+				<label>上传封面图片 <small class="description">(小于5M,jpg、jpeg的格式,请指定一个封面图)</small></label>
+				<input type="hidden" name="cover_id" id="topic_cover_id" value="{{ topic.cover_id }}" />
+				<div id="phenix-uploader"></div>
+			
+				<div id="asset-list" class="ui six blocks">
+					{% if mode == 'edit' %}
+						{% asset_list var:'assets' parent_id:topic._id asset_type:50 %}
+						{% for asset in assets.rows %}
+						<div class="thumb card block" id="{{ asset._id }}">
+							<div class="image">
+								<img src="{{ asset.thumbnails.mini.view_url }}" />
+								<input type="hidden" class="asset_id_list" name="asset[]" value="{{ asset._id }}" />
+							</div>
+							<div class="buttons">
+								<div class="ui large links">
+									<a href="{{ app_url_topic }}/delete_asset?id={{ id }}&asset_id={{ asset._id }}" class="ui link ajax pop" data-content="删除此缩略图？" data-variation="inverted">
+										<i class="remove icon"></i>
+									</a>
+									<a href="javascript:void(0);" class="ui link ajax-cover {% if topic.cover_id == asset._id %}active{% endif %} pop" data-content="设置封面图" data-variation="inverted" data-value="{{ asset._id }}">
+										<i class="checkered flag icon"></i>
+									</a>
+								</div>
+							</div>
+						</div>
+						{% endfor %}
+					{% endif %}
+				</div>
+			</div>
+            
+    		<div class="ui right aligned grid">
+    			<div class="column">
+    				<div class="ui large green cancel inverted button">
+    					取消
+    				</div>
+    				<div class="ui large red submit inverted button">
+    					确认提交
+    				</div>
+    			</div>
+    		</div>
+            
+		</form>
+    </div>
+{% endblock %}

@@ -1,0 +1,138 @@
+{%extends 'layout/base.html'%}
+{% block title%}门店展示-{% endblock %}
+
+{% block content %}
+<section class="about submenu">
+	<div class="ui responsive grid">
+		<div class="row">
+			<div class="four wide column">
+				服务与支持
+			</div>
+			<div class="twelve wide right aligned column">
+				<div class="ui horizontal list">
+					<!--a href="{{ app_url_guide }}/finishsaled" class="{{ css_page_finishsaled }} item">售后服务</a-->
+                    <a href="{{ app_url_guide }}/finishsaled" class="{{ css_page_finishsaled }} item">服务条款</a>
+					<a href="{{ app_url_guide }}/outlets" class="{{ css_page_outlets }} item">销售网点</a>
+					<!--a href="{{ app_url_guide }}/store" class="{{ css_page_store }} item">门店展示</a-->
+                    <a href="http://113.98.196.141/tiaoma/index.asp?id=1&t=chan-pin-zhen-wei-cha-xun" class="{{ css_page_agreement }} item">防伪验证</a>
+                    <a href="ftp://113.98.196.130" class="{{ css_page_agreement }} item">资料下载</a>
+                </div>
+			</div>
+		</div>
+    </div>
+</section>
+
+<section class="store banner">
+	<div class="ui responsive center aligned grid">
+		<div class="row">
+			<div class="center aligned twelve wide column">
+				<h2 class="ui white header">
+					<div class="content">
+                        门店展示
+						<div class="sub header">我们随时为你提供帮助</div>
+					</div>
+				</h2>
+			</div>
+		</div>
+    </div>
+</section>
+<section class="store content">
+	<div class="ui responsive grid">
+		<div class="row">
+			<div class="column">
+                <div class="ui three stackable store cards">
+                    <div class="card">
+                        <div class="image">
+                            <img src="/images/storex01.jpg" >
+                        </div>
+                        <div class="content">
+                            <div class="description">
+                                佳木斯市新世纪电脑城
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="image">
+                            <img src="/images/storex02.jpg" >
+                        </div>
+                        <div class="content">
+                            <div class="description">
+                                河南郑州
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="image">
+                            <img src="/images/storex03.jpg" >
+                        </div>
+                        <div class="content">
+                            <div class="description">
+                                杭州百脑汇
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="image">
+                            <img src="/images/storex04.jpg" >
+                        </div>
+                        <div class="content">
+                            <div class="description">
+                                杭州
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="image">
+                            <img src="/images/storex05.jpg" >
+                        </div>
+                        <div class="content">
+                            <div class="description">
+                                哈尔滨船舶电脑城
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="image">
+                            <img src="/images/storex06.jpg" >
+                        </div>
+                        <div class="content">
+                            <div class="description">
+                                桂林市耳邦电脑
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="image">
+                            <img src="/images/storex07.jpg" >
+                        </div>
+                        <div class="content">
+                            <div class="description">
+                                成都新世纪门店
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="image">
+                            <img src="/images/storex08.jpg" >
+                        </div>
+                        <div class="content">
+                            <div class="description">
+                                昆明金太阳电脑城
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+                        
+            </div>
+		</div>
+	</div>
+</section>
+{% endblock %}

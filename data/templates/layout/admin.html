@@ -1,0 +1,35 @@
+{% extends 'layout/base.html' %}
+{% block title %}管理控制台-{% endblock %}
+{% block layout_css %}
+	<style type="text/css">
+    .adminbd {
+        margin: 1em auto 2em;
+    }
+    .ui.segment {
+        box-shadow: none;
+    }
+	</style>
+{% endblock %}
+
+{% block page_css %}{% endblock %}
+
+{% block layout_js %}
+<script src="{{ app_url_domain }}/js/picker.js" type="text/javascript"></script>
+<script src="{{ app_url_domain }}/js/picker.date.js" type="text/javascript"></script>
+{% endblock %}
+
+{% block jquery %}{% endblock %}
+
+{% block layout_content %}
+<div id="ajax-note"></div>
+<div class="adminbd">
+	<div class="ui responsive grid">
+	  	<div class="four wide column">
+	    	{% include "block/sitebar_admin.html" %}
+	  	</div>
+	  	<div class="twelve wide column">
+			{% block content %}{% endblock %}
+	  	</div>
+	</div>
+</div>
+{% endblock %}

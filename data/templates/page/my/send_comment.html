@@ -1,0 +1,168 @@
+{%extends 'layout/column.html'%}
+{% block title %}我的评论-{% endblock %}
+{% block page_css %}
+<style type="text/css">
+  .content .text img{
+    max-width: 150px;
+    max-height: 800px;
+    overflow: hidden;
+    padding: 10px 10px 0 0;
+  }
+  .content .text p{
+    margin:0;
+  }
+
+  .content .text a{
+    text-decoration:none;
+    color:#f36;
+  }
+
+  .content .text a:hover{
+    text-decoration:underline;
+    color:#f36;
+  }
+	.comment-show.ui.buttons .button:first-child {
+	  border-left: 0px solid gray; 
+	}
+
+</style>
+{% endblock %}
+{% block js %}
+{% endblock %}
+{% block jquery %}
+	// 显示私信框
+	$('.reply_message').bind('click', function(){
+    $('[name=nickname]').val($(this).attr('nickname'));
+    $('[name=to]').val($(this).attr('user_id'));
+		$('.ui.letter.modal').modal('show');
+	});
+	// 隐藏私信框
+	$('.ui.cancel.button').bind('click', function(){
+		$('.ui.letter.modal').modal('hide');
+	});
+	
+	$('#message-form').form({
+		content: {
+			identifier  : 'content',
+			rules: [
+				{
+					type   : 'empty',
+					prompt : '评论内容不能为空'
+				},
+				{
+					type   : 'maxLength[140]',
+					prompt : '评论内容不超过140字符'
+				}
+			]
+		}
+	}, {
+		inline : true,
+		onSuccess: function(event){
+			event.preventDefault();
+			$(event.target).ajaxSubmit();
+		}
+	});
+	
+	$('[data-countdown]').each(function() {
+		var $this = $(this), finalDate = $(this).data('countdown');
+		$this.countdown(finalDate, function(event) {
+			$this.html(event.strftime('%-D'));
+		});
+	});
+
+  //评论按钮-接收
+  $('.ui.recive-comment.button').click(function(){
+    phenix.redirect("{{ app_url_my }}/recive_comment");
+  });
+  //评论按钮-发送
+  $('.ui.send-comment.button').click(function(){
+    phenix.redirect("{{ app_url_my }}/send_comment");
+  });
+
+    //查看大图
+    $('.comment-img-box').on('click', function(){
+      var evt = $(this).attr('show-type');
+      if(evt==1){
+        $(this).find('img').css({'max-width':'100%', 'cursor':'-webkit-zoom-out', 'cursor':'-moz-zoom-out', 'cursor':'-ms-zoom-out', 'cursor':'-o-zoom-out'});
+        $(this).attr('show-type', 2);
+      }else{
+        $(this).find('img').css({'max-width':'150px', 'cursor':'-webkit-zoom-in', 'cursor':'-moz-zoom-in', 'cursor':'-ms-zoom-in', 'cursor':'-o-zoom-in'});
+        $(this).attr('show-type', 1);
+      }
+    });
+	
+{% endblock %}
+
+{% block content %}
+<div class="section breadcrumb">
+	<div class="ui responsive grid">
+		<div class="row">
+			<div class="column">
+				<div class="ui medium breadcrumb">
+				  	<a class="ui section link" href="{{ app_url_domin }}">
+						<i class="home icon"></i> 首页
+					</a>
+                    <i class="angle right icon divider"></i>
+				  	<a class="ui section link" href="{{ app_url_my }}">
+						个人中心
+					</a>
+					<i class="angle right icon divider"></i>
+					<div class="active section">消息提醒</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="account comment">
+	<div class="ui responsive grid">
+		<div class="four wide column">
+			{% include "block/user/sub_menu_center.html" %}
+		</div>
+		<div class="twelve wide column">
+			<h2 class="ui header">消息提醒</h2>
+			{% include "block/center/head_notice_nav.html" %}
+            
+			<div class="ui alarm segment">
+                <div class="comment-show ui buttons">
+                    <div class="ui magenta inverted recive-comment button {{ css_recive_comment }}">
+                        收到的评论
+                    </div>
+                    <div class="ui magenta inverted send-comment button {{ css_send_comment }}">
+                        发出的评论
+                    </div>
+                </div>
+                
+                {% comment_list var:'list' page:page size:20 sort:1 user_id:user_id load_item:1 %}
+
+                {% for d in list.rows %}
+                  {% if d.target %}
+                    <div class="mes-text">
+                      <a class="ui photo">
+                        <img alt="{{ d.target.user.nickname }}" src="{{ d.target.user.small_avatar_url }}">
+                      </a>
+                      <div class="news content">
+                        我评论了 <a href="{{ d.target.user.home_url }}" class="ui link">{{ d.target.user.nickname }}</a> 的 <span>{{ d.type_str }}</span> 
+                        <a class="ui magenta link" href="{{ d.target.view_url }}" target="_blank">{{ d.target.title|truncate 45 }}</a>
+                          <span class="date">{{ d.created_on }}</span>
+
+                          <div class="sub_header text"> {{ d.content }}</div>
+                       </div>  
+                    </div>
+                  {%endif%}
+                {%endfor%}
+				{% if list.rows %}
+					<div class="ui pagination">
+		            {% pager url:pager_url,total_rows:list.total_rows,total_page:list.total_page,current_page:page,var:'pager',pager_size:9 %}
+		            {%include 'block/pager.html'%}
+					</div>
+		          {% endif %}
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+
+
+
+

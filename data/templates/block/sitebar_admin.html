@@ -1,0 +1,66 @@
+<div class="ui pointing vertical fluid menu">
+	<div class="header item">
+	    <i class="dashboard icon"></i> 控制台
+	</div>
+	<a class="{{ css_page_dashboard }} item" href="{{ app_url_admin_base }}/console/dashboard">
+		概况统计
+	</a>
+    
+	<div class="header item">
+	    <i class="cubes icon"></i> 产品
+	</div>
+	<a class="{{ css_page_category }} item" href="{{ app_url_admin_base }}/category">
+		分类管理
+	</a>
+	<a class="{{ css_page_product }} item" href="{{ app_url_admin_base }}/product">
+		产品管理
+	</a>
+	<a class="{{ css_page_asset }} item" href="{{ app_url_admin_base }}/asset">
+		附件管理
+	</a>
+	<div class="header item">
+	    <i class="money icon"></i> 销售
+	</div>
+	<a class="{{ css_page_advertise }} item" href="{{ app_url_admin_base }}/advertise">
+		推荐管理
+	</a>
+	<a class="{{ css_page_orders }} item" href="{{ app_url_admin_base }}/orders">
+		订单管理
+	</a>
+    {% if visitor.is_admin %}
+	<a class="{{ css_page_gift }} item" href="{{ app_url_admin_base }}/gift">
+		礼品卡管理
+	</a>
+	{% endif %}
+	
+	<div class="header item">
+	    <i class="user icon"></i> 用户
+	</div>
+    {% if visitor.is_admin %}
+	<a class="{{ css_page_user }} item" href="{{ app_url_admin_base }}/user">
+		用户管理
+	</a>
+    {% endif %}
+    
+	<div class="header item">
+        <i class="configure icon"></i> 系统
+    </div>
+	<a class="{{ css_page_estore }} item" href="{{ app_url_admin_base }}/estore">
+	    销售网点
+	</a>
+	<a class="{{ css_page_cake }} item" href="{{ app_url_admin_base }}/cake">
+		公告管理
+	</a>
+	<a class="{{ css_page_topic }} item" href="{{ app_url_admin_base }}/topic">
+		新闻中心
+	</a>
+	<a class="{{ css_page_comment }} item" href="{{ app_url_admin_base }}/comment">
+		评论管理
+	</a>
+	<a class="{{ css_page_areas }} item" href="{{ app_url_admin_base }}/areas">
+		城市管理
+	</a>
+	<a class="{{ css_page_friend_link }} item" href="{{ app_url_admin_base }}/friend_link">
+		友情链接
+	</a>
+</div>

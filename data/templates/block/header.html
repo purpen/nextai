@@ -1,0 +1,32 @@
+<div class="headerbox">
+    <div class="ui responsive grid">
+        <div class="row">
+            <div class="column">
+                <div class="ui inverted secondary menu">
+                    <div class="img item">
+                        <img src="/images/logo.jpg" alt="智感生活" class="ui" />
+                    </div>
+                    
+                    <div class="right menu">
+                        <a href="{{ app_url_domain }}" class="{{ css_page_home }} item">
+                            首页
+                        </a>
+                        {% category_list var:"list" istop:1 only_open:1 current:cid %}
+                        {% if list.rows %}
+                            {% for cat in list.rows %}
+                                <a href="{{ cat.view_url }}" class="{{ cat.active }} item">{{ cat.title }}</a>
+                            {% endfor %}
+                        {% endif %}
+              		    
+                        <div class="icon item">
+                            <a href="{{ app_url_search }}" title="搜索">
+                                <img src="/images/icon-search.jpg" alt="搜索" />
+                            </a>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

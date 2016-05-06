@@ -1,0 +1,403 @@
+{%extends 'layout/admin.html'%}
+{% block page_css %}
+{% endblock %}
+
+{% block jquery %}
+	$('.datepicker').pickadate();
+	
+	$('.ui.submit.button.search').click(function(){
+		$('#search-form').submit();
+	});
+
+	// 确认退款弹框 
+	$('a[name=confirm-refund]').bind('click', function(){
+    var rid = $(this).attr('rid');
+    var pay_money = $(this).attr('pay_money');
+    var user_id = $(this).attr('user_id');
+    var pay_name = $(this).attr('pay_name');
+    $('div.refund-box [name=rid]').val(rid);
+    $('div.refund-box [name=rid-show]').text(rid);
+    $('div.refund-box [name=pay-money-show]').text(pay_money);
+    $('div.refund-box [name=user-id-show]').text(user_id);
+    $('div.refund-box [name=pay-name-show]').text(pay_name);
+		$('.ui.refund-box.modal').modal('show');
+	});
+
+	// 确认退款弹框－强制，不退款，直接改状态(需要手动退款)
+	$('a[name=confirm-refund-force]').bind('click', function(){
+    var rid = $(this).attr('rid');
+    var pay_money = $(this).attr('pay_money');
+    var user_id = $(this).attr('user_id');
+    var pay_name = $(this).attr('pay_name');
+    $('div.refund-force-box [name=rid]').val(rid);
+    $('div.refund-force-box [name=rid-show]').text(rid);
+    $('div.refund-force-box [name=pay-money-show]').text(pay_money);
+    $('div.refund-force-box [name=user-id-show]').text(user_id);
+    $('div.refund-force-box [name=pay-name-show]').text(pay_name);
+		$('.ui.refund-force-box.modal').modal('show');
+	});
+
+	// 确认退款按钮
+	$('.ui.refund.button').click(function(){
+		$('.ui.refund-result-box.modal').modal('show');
+		$('.ui.refund-box.modal').modal('hide');
+
+	});
+
+	// 支付后查看结果
+	$('.ui.refund-result').click(function(){
+    location.reload(true);
+	});
+
+	$('#refund-force-form').form({
+
+	}, {
+		inline : true,
+		onSuccess: function(event){
+			event.preventDefault();
+			$(this).ajaxSubmit({
+				dataType: 'json',
+				beforeSubmit: function(){
+					sher.before_submit();
+				},
+				success: function(data){
+					sher.after_submit();
+					
+					if(data.is_error){
+						$(event.target).addClass('error');
+						sher.show_error_note(data.message, 3000);
+					}else{
+						sher.show_ok_note(data.message, 3000);
+            location.reload();
+					}
+				}
+			});
+		}
+	});
+{% endblock %}
+	
+{% block content %}
+	<h3 class="ui header">订单详情</h3>
+	
+	<div class="ui secondary pointing magenta menu">
+		<a href="{{ app_url_admin_base }}/orders" class="item">
+			全部
+		</a>
+		<a href="{{ app_url_admin_base }}/orders?s=1" class="{% if s == 1 %}active{%endif%} item">
+			未支付
+		</a>
+		<a href="{{ app_url_admin_base }}/orders?s=2" class="{% if s == 2 %}active{%endif%} item">
+			待发货
+		</a>
+		<a href="{{ app_url_admin_base }}/orders?s=5" class="{% if s == 5 %}active{%endif%} item">
+			申请退款
+		</a>
+		<a href="{{ app_url_admin_base }}/orders?s=6" class="{% if s == 6 %}active{%endif%} item">
+			已退款
+		</a>
+		<a href="{{ app_url_admin_base }}/orders?s=3" class="{% if s == 3 %}active{%endif%} item">
+			已发货
+		</a>
+		<a href="{{ app_url_admin_base }}/orders?s=4" class="{% if s == 4 %}active{%endif%} item">
+			已完成
+		</a>
+		
+		<a href="" class="active item">
+			订单详情
+		</a>
+		
+		<div class="right menu">
+			<a href="{{ app_url_admin_base }}/orders?s=9" class="{% if s == 9 %}active{%endif%} item">
+				已关闭
+			</a>
+		</div>
+	</div>
+	
+	<div class="ui sub search">
+		<form action="{{ app_url_admin_base }}/orders/search" method="post" class="ui form" id="search-form">
+			<div class="five fields">
+				<div class="field">
+					<input type="text" name="q" placeholder="订单编号" value="{{ q }}" />
+				</div>
+				<div class="field">
+					<input type="text" name="name" placeholder="姓名" value="{{ name }}" />
+				</div>
+				<div class="field">
+					<input type="text" name="mobile" placeholder="电话" value="{{ mobile }}" />
+				</div>
+				<div class="field">
+					<input type="text" name="product" placeholder="商品名称" value="{{ product }}" />
+				</div>
+				<div class="field">
+					<input type="text" name="sku" placeholder="商品编号" value="{{ sku }}" />
+				</div>
+			</div>
+			<div class="five fields">
+				<div class="field">
+					<div class="ui icon input">
+					  	<input type="text" name="start_date" placeholder="开始时间" value="{{ start_date }}" class="datepicker" />
+					  	<i class="calendar icon"></i>
+					</div>
+				</div>
+				<div class="field">
+					<div class="ui icon input">
+					  	<input type="text" name="end_date" placeholder="截止时间" value="{{ end_date }}" class="datepicker" />
+					  	<i class="calendar icon"></i>
+					</div>
+				</div>
+				<div class="field">
+					<div class="ui fluid selection dropdown">
+						<input type="hidden" name="s" value="{{ s }}" />
+					    <div class="default text">订单状态</div>
+					    <div class="menu">
+							<div data-value="0" class="{% if !s %}active {% endif %}item">全部订单</div>
+							<div data-value="1" class="{% if s == 1 %}active {% endif %}item">未支付订单</div>
+							<div data-value="2" class="{% if s == 2 %}active {% endif %}item">待发货订单</div>
+							<div data-value="3" class="{% if s == 3 %}active {% endif %}item">已发货订单</div>
+							<div data-value="4" class="{% if s == 4 %}active {% endif %}item">已完成订单</div>
+					    </div>
+					</div>
+				</div>
+				<div class="field">
+					<div class="ui active small green submit button">开始搜索</div>
+				</div>
+			</div>
+		</form>
+	</div>
+	
+	<div class="ui top attached header">
+		<div class="ui middle aligned grid">
+			<div class="row">
+				<div class="ten wide column">
+					<div class="ui horizontal list">
+					  	<div class="item">
+					      	订单号：{{ order_info.rid }}
+					  	</div>
+						<div class="item">
+							<span class="ui magenta text">({{ order_info.status_label }})</span>
+						</div>
+						<div class="item">
+							<span class="ui gray text">@{{ order_info.from_site_label }}订单</span>
+						</div>						
+					</div>
+				</div>
+				<div class="right aligned six wide column">
+					{% if order_info.status == 10 %}
+					  <a href="{{ app_url_admin_base }}/orders/send?rid={{ order_info.rid }}" class="ui active small magenta button">开始发货</a>
+					{% endif %}
+					{% if can_refund %}
+            <a href="javascript:void(0);" class="ui small gray button" name="confirm-refund" rid="{{ order_info.rid }}" pay_money="{{ order_info.pay_money }}" user_id="{{ order_info.user_id }}" pay_name="{{order_info.trade_site_name}}" >确认退款</a><a href="javascript:void(0);" class="ui small red button" name="confirm-refund-force" rid="{{ order_info.rid }}" pay_money="{{ order_info.pay_money }}" user_id="{{ order_info.user_id }}" pay_name="{{order_info.trade_site_name}}" >强制</a>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="middle aligned ui celled white grid">
+		<div class="row">
+			<div class="seven wide column">
+				<div class="ui divided order products list">
+					<table class="ui basic table">
+						<tbody>
+							{% for item in order_info.items %}
+							{% product_list var:'product' product_id:item.product_id %}
+							<tr>
+								<td>
+									<a href="{{ product.view_url }}" class="ui cover image" target="_blank">
+							      		<img src="{{ product.cover.thumbnails.mini.view_url }}" alt="{{ product.title }}" />
+									</a>
+								</td>
+								<td>
+							      	<div class="content">
+									{% if item.sku == item.product_id %}
+						          	<div class="header">
+										<a href="{{ product.view_url }}" class="ui link">{{ product.title }}</a>&nbsp;&nbsp;x {{ item.quantity }}
+									</div>
+									{% else %}
+									{% sku_list var:'sku' sku:item.sku %}
+						          	<div class="header">
+                          <a href="{{ product.view_url }}" class="ui link">{{ product.title }} ({{ sku.mode }})</a>&nbsp;&nbsp;x {{ item.quantity }}
+									</div>
+									{% endif %}
+							          	<p class="attribute">编号：{{ item.sku }}</p>
+							      	</div>
+								</td>
+							</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div class="center aligned three wide column">
+			  	<div class="item">
+			      	{{ order_info.created_on|date }}
+			  	</div>
+			</div>
+			<div class="center aligned three wide column">
+				<p>
+					{{ order_info.payment.name }}
+				</p>
+			</div>
+			<div class="center aligned three wide column">
+				{% if order.status < 5 %}
+					<a href="{{ order_info.view_url }}" class="ui link">评价 »</a>
+				{% endif %}
+			</div>
+		</div>
+		<div class="row">
+			<div class="right aligned column">
+				<p><b id="cart_items_count">{{ order_info.items_count }}</b>件产品，金额合计： <b id="order_total_money">{{ order_info.total_money }}</b>元</p>
+		
+				<p>优惠：<b id="order_coin_money">-{{ order_info.card_money }}</b>元</p>
+				<p>运费：<b id="order_freight_money">{{ order_info.freight }}</b>元</p>
+		
+				<p>实付金额：<b id="order_pay_money">{{ order_info.pay_money }}</b>元</p>
+			</div>
+		</div>
+	</div>
+	
+	<div class="ui bottom attached segment">
+		{% if order_info.status > 14 %}
+		<h3 class="ui dividing header">物流信息</h3>
+		<div class="ui list">
+		  	<div class="item"><label>物流公司：</label> {{ order_info.express_company.title }}</div>
+		  	<div class="item"><label>运单号码：</label> {{ order_info.express_no }}</div>
+		</div>
+		<p>
+			{% if visitor.is_system %}
+			<a href="{{ app_url_admin_base }}/orders/revoke_send?rid={{ order_info.rid }}" class="ui small ajax magenta button">撤销发货</a>
+			{% endif %}
+			<a href="{{ app_url_admin_base }}/orders/send?rid={{ order_info.rid }}" class="ui small magenta button">更新物流信息</a>
+		</p>
+		{% endif %}
+		
+		<h3 class="ui dividing header">下单用户</h3>
+		<div class="ui list">
+			<div class="item">
+				<label>昵  称：</label>
+				<a href="{{ order_info.user.home_url }}" target="_blank" class="ui magenta link">{{ order_info.user.nickname }}</a>
+			</div>
+		</div>
+		
+		<h3 class="ui dividing header">收货信息</h3>
+    <!--针对老数据及微信-->
+		{% if order_info.express_info %}
+			<div class="ui list">
+			  	<div class="item"><label>姓   名：</label> {{ order_info.express_info.name }}</div>
+			  	<div class="item"><label>收货地址：</label> {{ order_info.express_info.province }} {{ order_info.express_info.city }} {{ order_info.express_info.area }} {{ order_info.express_info.address }}</div>
+			  	<div class="item"><label>联系电话：</label> {{ order_info.express_info.phone }}</div>
+			  	<div class="item"><label>邮政编码：</label> {{ order_info.express_info.zip }}</div>
+			</div>
+		{% else %}
+			<div class="ui list">
+			  	<div class="item"><label>姓   名：</label> {{ order_info.addbook.name }}</div>
+			  	<div class="item"><label>收货地址：</label> {{ order_info.addbook.area_province.city }} {{ order_info.addbook.area_district.city }} {{ order_info.addbook.address }}</div>
+			  	<div class="item"><label>联系电话：</label> {{ order_info.addbook.phone }}</div>
+			  	<div class="item"><label>邮政编码：</label> {{ order_info.addbook.zip }}</div>
+			</div>
+		{% endif %}
+		
+		<h3 class="ui dividing header">发票信息</h3>
+		<div class="ui list">
+			{% if order_info.invoice_type %}
+				<div class="item"><label>发票类型：</label> {{ order_info.invoice_caty_label.title }}</div>
+				{% if order_info.invoice_caty == 2 %}
+					<div class="item"><label>发票抬头：</label> {{ order_info.invoice_title }}</div>
+				{% endif %}
+				<div class="item"><label>发票内容：</label> {{ order_info.invoice_content_label.title|default '购买明细' }}</div>
+			{% else %}
+			<div class="item"><label>无需发票</label></div>
+			{% endif %}
+		</div>
+		
+		<h3 class="ui dividing header">备注</h3>
+		<div class="ui list">
+			<div class="item">{{ order_info.summary|default '无' }}</div>
+		</div>
+		
+		<h3 class="ui dividing header">送货时间</h3>
+		<div class="ui list">
+			<div class="item">{{ order_info.transfer_time_s.title }}</div>
+		</div>
+	</div>
+
+<!-- 确认退款弹出层 -->
+<div class="ui small refund-box modal">
+    <i class="close icon"></i>
+  <div class="header">
+    退款信息:
+  </div>
+    <div class="content">
+    <form action="{{ app_url_admin }}/orders/ajax_do_refund" class="ui form" method="post" id="refund-form" target="_blank">
+      <div class="field">
+        <label>订单号: <span name="rid-show"></span></label>
+        <!--<input type="text" name="nickname" value="" disabled="disabled" />-->
+        <input type="hidden" name="rid" value="" />
+      </div>
+      <div class="field">
+        <label>退款用户ID: <span name="user-id-show"></span></label>
+      </div>
+      <div class="field">
+        <label>支付类型: <span name="pay-name-show"></span></label>
+      </div>
+      <div class="field">
+        <label>退款金额: <span name="pay-money-show"></span></label>
+      </div>
+
+      <div class="right aligned field ">
+        <div class="ui gray cancel button">取消</div>
+				<input type="submit" class="ui active refund magenta submit button" value="确认退款" />
+      </div>
+    </form>
+    </div>
+</div>
+
+<!-- 确认退款弹出层 强制 -->
+<div class="ui small refund-force-box modal">
+    <i class="close icon"></i>
+  <div class="header">
+    注: <span style="color:red;">此方法在使用非支付宝支付情况或退款出现问题时使用，执行此操作，不退款，只更改当前状态为退款成功，且退款金额记录为用户购买时所支付的金额,最后还需要编辑人员手动完成退款操作，请大家谨慎操作!!!</span>
+  </div>
+    <div class="content">
+    <form action="{{ app_url_admin }}/orders/ajax_do_refund_force" class="ui form" method="post" id="refund-force-form">
+      <div class="field">
+        <label>订单号: <span name="rid-show"></span></label>
+        <!--<input type="text" name="nickname" value="" disabled="disabled" />-->
+        <input type="hidden" name="rid" value="" />
+      </div>
+      <div class="field">
+        <label>退款用户ID: <span name="user-id-show"></span></label>
+      </div>
+      <div class="field">
+        <label>支付类型: <span name="pay-name-show"></span></label>
+      </div>
+      <div class="field">
+        <label>退款金额: <span name="pay-money-show"></span></label>
+      </div>
+
+      <div class="right aligned field ">
+        <div class="ui gray cancel button">取消</div>
+				<input type="submit" class="ui active refund-force magenta submit button" value="确认更改状态" />
+      </div>
+    </form>
+    </div>
+</div>
+
+<!-- 退款成功后返回结果 -->
+<div class="ui small refund-result-box modal">
+    <i class="close icon"></i>
+  <div class="header">
+    退款结果:
+  </div>
+    <div class="content">
+    <form class="ui form" method="get">
+      <div class="field">
+        <label>点击确定查看退款状态是否正确</label>
+      </div>
+      <div class="right aligned field ">
+				<input type="submit" class="ui active refund-result magenta submit button" value="确定" />
+      </div>
+    </form>
+    </div>
+</div>
+
+{% endblock %}

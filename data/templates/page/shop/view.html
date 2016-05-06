@@ -1,0 +1,146 @@
+{%extends 'layout/base.html'%}
+{% block title %}{{ product.title }}-{% endblock %}
+
+{% block page_css %}
+<style type="text/css">
+.product.bread {
+    background-color: #f7f7f7;
+    margin: 0px auto 15px;
+}
+.ui.subnav.divided.list {
+    margin: 0 10px 0 20px;
+}
+.ui.subnav.divided.list > .item {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+.product.content .desc > p {
+    margin: 0 !important;
+}
+.product.content .desc img.fr-fin {
+    box-sizing: content-box;
+    display: block;
+    margin: 0 auto;
+}
+.product.content .desc img.fr-fin.fr-dib {
+    max-width: 100%;
+}
+.ui.breadcrumb a.section {
+    color: #555;
+}
+.price {
+    color: #d65454;
+    font-size: 18px;
+}
+.price small {
+    font-size: 12px;
+}
+.attrs {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 20px;
+}
+.attrs.buy {
+    padding-top: 20px;
+}
+.attrs.buy .quantity {
+    border: 1px solid #eee;
+    padding: 3px 5px;
+    text-align: center;
+    width: 50px;
+}
+.mode.attrs {
+    padding-top: 20px;
+}
+
+.btns {
+    padding-top: 20px;
+}
+
+</style>
+{% endblock %}
+
+{% block jquery %}
+    
+    $('#carousel').flexslider({
+        animation: "slide",
+        controlNav: false,
+        animationLoop: false,
+        slideshow: false,
+        itemWidth: 120,
+        itemMargin: 10,
+        asNavFor: '#slider'
+    });
+
+    $('#slider').flexslider({
+        animation: "slide",
+        controlNav: false,
+        animationLoop: false,
+        slideshow: false,
+        sync: "#carousel"
+    });
+          
+	// 如果仅一个sku,则设置默认值
+	{% if skus_count %}
+		var choosed_sku = 0;
+	{% else %}
+		var choosed_sku = {{ product._id }};
+	{% endif %}
+    
+	// 选择sku
+	$('.attrs .ui.att.button').click(function(){
+		choosed_sku = $(this).data('id');
+		$('.attrs .ui.att.active.button').removeClass('active');
+		$(this).addClass('active');
+        $('#current-price').html('<small class="unit"><i class="yen icon"></i></small>'+$(this).data('price'));
+		return false;
+	});
+    
+	// 加入购物车
+	$('.ui.tobuy.button').click(function(){
+		if (choosed_sku){
+			$.post('{{ app_url_cart_buy }}', {sku: choosed_sku});
+		} else {
+			sher.show_error_note('请选择一个型号或颜色', 3000);
+		}
+	});
+    
+  	// 立即购买
+    $('.ui.nowbuy.button').livequery(function(){
+        $(this).click(function(){
+            // 所有ajax请求，验证是否登录
+            if (!sher.visitor.is_login){
+                sher.show_login_box();
+                return false;
+            }
+            if (choosed_sku){
+                sher.redirect('{{ app_url_cart_nowbuy }}?sku='+choosed_sku, 0);
+            } else {
+                sher.show_error_note('请选择一个型号或颜色', 3000);
+            }
+          }); 
+    });
+
+{% endblock %}
+
+{% block content %}
+<div class="product info">
+    <div class="ui responsive grid">
+        <div class="two column row">
+            <div class="column">
+                {{ product.title }}
+            </div>
+        </div>
+    </div>
+</div>    
+<div class="product content">   
+    <div class="ui responsive grid">
+        <div class="row">
+            <div class="column">
+                <div class="froala-element desc">
+                    {{ product.content }}
+                </div>
+            </div>
+        </div>
+    </div> 
+</div>
+{% endblock %}

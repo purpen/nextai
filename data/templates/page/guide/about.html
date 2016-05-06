@@ -1,0 +1,109 @@
+{%extends 'layout/base.html'%}
+{% block title%}关于我们-{% endblock %}
+{% block page_css %}
+<style type="text/css">
+    
+</style>
+{% endblock %}
+
+{% block jquery %}
+	
+{% endblock %}
+
+{% block content %}
+<section class="about submenu">
+	<div class="ui responsive grid">
+		<div class="row">
+			<div class="four wide column">
+				关于我们
+			</div>
+			<div class="twelve wide right aligned column">
+				<div class="ui horizontal list">
+                    <a href="{{ app_url_guide }}/about" class="{{ css_page_about }} item">公司介绍</a>
+                    <a href="{{ app_url_guide }}/brand" class="{{ css_page_brand }} item">品牌文化</a>
+                    <a href="{{ app_url_guide }}/history" class="{{ css_page_history }} item">发展纪事</a>
+                    <a href="{{ app_url_guide }}/prize" class="{{ css_page_prize }} item">资质荣誉</a>
+                </div>
+			</div>
+		</div>
+    </div>
+</section>
+
+<section class="about banner">
+	<div class="ui responsive center aligned grid">
+		<div class="row">
+			<div class="center aligned twelve wide column">
+				<h2 class="ui white header">
+					<div class="content">
+						关于我们
+						<div class="sub header"> Microlab麦博，一个中国多媒体行业最具影响力的领导品牌，一个18年来始终专注于音箱领域研发与制造的知名企业，一个以先进技术和优质产品领先国内、享誉国际的行业龙头，一个以“听觉的艺术”为理念，以创造更美好的听觉享受为己任的践行者！
+						</div>
+					</div>
+				</h2>
+			</div>
+		</div>
+    </div>
+</section>
+<section class="about content">
+    <div class="ui responsive center aligned grid">
+		<div class="four column row">
+			<div class="column">
+               <div class="xitem">
+                   <h3 class="ui header">
+   					<div class="content">
+                           公司介绍
+   						<div class="sub header">
+                               <small>国内最具影响力的多媒体行业领导品牌之一</small>
+                           </div>
+   					</div>
+                   </h3>
+                   <a href="" class="link">关于麦博</a>
+               </div>
+            </div>
+            
+			<div class="column">
+               <div class="xitem">
+                   <h3 class="ui header">
+   					<div class="content">
+                           品牌文化
+   						<div class="sub header">
+                               <small>用科技与创新的力量为大众奉献“听觉的艺术”</small>
+                           </div>
+   					</div>
+                   </h3>
+                   <a href="" class="link">麦博文化</a>
+               </div>
+            </div>
+            
+			<div class="column">
+               <div class="xitem">
+                   <h3 class="ui header">
+   					<div class="content">
+                           发展纪事
+   						<div class="sub header">
+                               <small>麦博的第一次，也是中国音箱行业的第一次</small>
+                           </div>
+   					</div>
+                   </h3>
+                   <a href="" class="link">麦博历史</a>
+               </div>
+            </div>
+            
+			<div class="column">
+               <div class="xitem">
+                   <h3 class="ui header">
+   					<div class="content">
+                           资质荣誉
+   						<div class="sub header">
+                               <small>最高的荣誉来自消费者对麦博品牌的认可</small>
+                           </div>
+   					</div>
+                   </h3>
+                   <a href="" class="link">麦博荣誉</a>
+               </div>
+            </div>
+            
+        </div>
+	</div>
+</section>
+{% endblock %}

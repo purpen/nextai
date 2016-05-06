@@ -1,0 +1,59 @@
+{%extends 'layout/admin.html'%}
+
+{% block jquery %}
+	$('#cake-form').form({
+		content: {
+			identifier  : 'content',
+			rules: [
+				{
+					type   : 'empty',
+					prompt : '公告内容不能为空'
+				},
+				{
+					type   : 'maxLength[140]',
+					prompt : '请别超过140个字符'
+				}
+			]
+		}
+    }, {
+		inline: true,
+		onSuccess: function(event){
+			event.preventDefault();
+			$(event.target).ajaxSubmit();
+		}
+	});
+{% endblock %}
+{% block content %}
+	<h3 class="ui header">公告管理</h3>
+	
+	<div class="ui secondary pointing magenta menu">
+		<a href="{{ app_url_admin_base }}/cake" class="{{css_all_category}} item">全部列表</a>
+	  	<div class="right menu">
+			<a href="{{ app_url_admin_base }}/cake/edit" class="active item">
+				<i class="add icon"></i> 新增公告
+			</a>
+	    </div>
+	</div>
+	
+	<div class="ui form segment">
+		{% if mode == 'create' %}
+		<h4>新增公告</h4>
+		{% else %}
+		<h4>编辑公告</h4>
+		{% endif %}
+		
+		<form action="{{ app_url_admin_base }}/cake/save" method="post" id="cake-form">
+			<input type="hidden" name="_id" value="{{ cake._id }}" />
+			<div class="field">
+			  	<label>内容：</label>
+				<textarea rows="3" name="content">{{ cake.content }}</textarea>
+				<div class="ui pointing top label">
+					限制140个字符之内!
+				</div>
+			</div>
+			
+			<button type="submit" class="ui red inverted submit button">确认保存</button>
+			<button type="button" class="ui green inverted button">取消</button>
+		</form>
+	</div>
+{% endblock %}

@@ -1,0 +1,15 @@
+<taconite>
+	{% if mode == 'message' %}
+	<eval>
+		phenix.show_ok_note('私信已发送成功', 2000, '#message-form');
+    $('.ui.letter.modal').modal('hide');
+	</eval>
+	{% endif %}
+
+	{% if mode == 'report' %}
+	<eval>
+		phenix.show_ok_note('您已成功提交!', 2000, '#report-form');
+    $('.ui.report.modal').modal('hide');
+	</eval>
+	{% endif %}
+</taconite>

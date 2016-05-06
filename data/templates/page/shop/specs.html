@@ -1,0 +1,99 @@
+{%extends 'layout/base.html'%}
+{% block title %}{{ product.title }}-{% endblock %}
+
+{% block page_css %}
+<style type="text/css">
+.product.bread {
+    background-color: #f7f7f7;
+    margin: 0px auto 15px;
+}
+.ui.subnav.divided.list {
+    margin: 0 10px 0 20px;
+}
+.ui.subnav.divided.list > .item {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+.ui.breadcrumb a.section {
+    color: #555;
+}
+.specs.content {
+    text-align: center;
+}
+.att {
+    width: 580px;
+    margin: 0px auto;
+}
+
+</style>
+{% endblock %}
+
+{% block jquery %}
+    
+{% endblock %}
+
+{% block content %}
+<div class="product bread">
+    <div class="ui responsive grid">
+        <div class="row">
+            <div class="column">
+                <div class="ui breadcrumb">
+                    <a class="section" href="{{ app_url_domain }}">首页</a>
+                    <i class="right angle icon divider"></i>
+                    <a class="section">商城</a>
+                    <i class="right angle icon divider"></i>
+                    <div class="active section">{{ product.title }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="product info">
+    <div class="ui responsive grid">
+        <div class="two column row">
+            <div class="column">
+                {{ product.title }}
+            </div>
+            <div class="right aligned column">
+				<div class="ui horizontal subnav divided list">
+                    <a href="{{ app_url_shop }}/view?id={{ product._id }}" class="item">功能</a>
+                    <a href="{{ app_url_shop }}/gallery?id={{ product._id }}" class="item">图集</a>
+                    <a href="{{ app_url_shop }}/specs?id={{ product._id }}" class="active item">参数</a>
+				</div>
+                <a href="{{ app_url_shop }}/nowbuy?id={{ product._id }}" class="ui active inverted black tiny button">立即购买</a>
+            </div>
+        </div>
+    </div>
+</div>    
+<div class="product content">   
+    <div class="ui responsive grid">
+        <div class="row">
+            <div class="column">
+                {% asset_list var:'assets' parent_id:product._id asset_type:16 kind:1 size:20 %}
+                <div class="specs content">
+					{% for asset in assets.rows %}
+                    <div class="asset">
+                        <img src="{{ asset.fileurl }}" />
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <div class="att">
+                    {% asset_list var:'files' parent_id:product._id asset_type:16 kind:2 size:20 %}
+                    {% for file in files.rows %}
+                    <div class="ui icon message">
+                        <i class="file pdf outline red icon"></i>
+                        <div class="content">
+                            <div class="header">
+                              附件下载
+                            </div>
+                            <p><a href="{{ file.view_url }}" target="_blank">{{ file.filename }}</a></p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div> 
+</div>
+{% endblock %}

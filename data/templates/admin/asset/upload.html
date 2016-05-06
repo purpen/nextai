@@ -1,0 +1,67 @@
+{%extends 'layout/admin.html'%}
+{% block page_css %}
+    <link rel="stylesheet" href="{{ app_url_packaged }}/css/fineuploader-3.5.0.css" type="text/css" />
+{% endblock %}
+{% block jquery %}
+	var file_count = 1;
+	var ord = function(){
+		return file_count++;
+	};
+	
+	var up = $('#phenix-uploader').fineUploader({
+		debug: true,
+      	request: {
+			inputName:'file',
+      params: {'x:pid': '{{ pid }}', 'x:domain': '{{ domain }}', 'x:ord': ord, 'x:user_id': {{ user_id }},'x:asset_type': {{ asset_type }},'file_id': '{{ pid }}' },
+        	endpoint: '{{ app_url_upload_pictures }}'
+      	},
+		text: {
+            uploadButton: '<a class="ui red inverted active labeled icon button" href="javascript:void(0);"><i class="flat add icon"></i>选择图片</a>'
+		},
+		template: '<div class="qq-uploader">' +
+					'<pre class="qq-upload-drop-area"><span>{dragZoneText}</span></pre>' +
+					'<div class="qq-upload-button">{uploadButtonText}</div>' +
+					'<span class="qq-drop-processing"><span>{dropProcessingText}</span><span class="qq-drop-processing-spinner"></span></span>' +
+					'<ul class="qq-upload-list clearfix" style="margin-top: 5px; text-align: center;"></ul>' +
+					'</div>',
+		validation: {
+	        allowedExtensions: ['jpeg', 'jpg', 'png'],
+	        sizeLimit: 3145728 // 3M = 3 * 1024 * 1024 bytes
+	    }
+    }).on('complete', function (event, id, name, result) {
+		if(result.is_error){
+			sher.show_error_message(result.message);
+		}else{
+            $('#file_path').text(result.link);
+			$('.qq-upload-list').children().eq(id).fadeOut();
+		}
+	});
+	
+{% endblock %}
+
+{% block content %}
+	<h3 class="ui header">附件列表</h3>
+	
+	<div class="ui secondary pointing magenta menu">
+		<a href="{{ app_url_admin_base }}/asset" class="small magenta item">
+			全部列表
+		</a>
+	  	<div class="right menu">
+			<a href="{{ app_url_admin_base }}/asset/upload" class="active item">
+				<i class="upload icon"></i> 上传图片
+			</a>
+			<a href="{{ app_url_admin_base }}/asset/delete" class="item">
+				<i class="delete icon"></i> 删除
+			</a>
+	    </div>
+	</div>
+	
+	<div class="field">
+		<h4 class="ui header">浏览上传图片</h4>
+		<div id="phenix-uploader"></div>
+		
+		<div id="asset-list" class="ui four items">
+            <p>图片路径: <span id="file_path"></span><br /></p>
+        </div>
+	</div>
+{% endblock %}

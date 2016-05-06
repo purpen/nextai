@@ -1,0 +1,64 @@
+{%extends 'layout/base.html'%}
+{% block title%}品牌文化-{% endblock %}
+
+{% block content %}
+<section class="about submenu">
+	<div class="ui responsive grid">
+		<div class="row">
+			<div class="four wide column">
+				关于我们
+			</div>
+			<div class="twelve wide right aligned column">
+				<div class="ui horizontal list">
+                    <a href="{{ app_url_guide }}/about" class="{{ css_page_about }} item">公司介绍</a>
+                    <a href="{{ app_url_guide }}/brand" class="{{ css_page_brand }} item">品牌文化</a>
+                    <a href="{{ app_url_guide }}/history" class="{{ css_page_history }} item">发展纪事</a>
+                    <a href="{{ app_url_guide }}/prize" class="{{ css_page_prize }} item">资质荣誉</a>
+                </div>
+			</div>
+		</div>
+    </div>
+</section>
+<section class="brand banner">
+	<div class="ui responsive center aligned grid">
+		<div class="row">
+			<div class="center aligned twelve wide column">
+				<h2 class="ui white header">
+					<div class="content">
+						品牌文化
+						<div class="sub header"> 奉行“创新 品质 价值”的核心理念，通过科技与创新，为大众提供无处不在的音乐享受、感受音乐的跳动脉博，为大众的生活、工作、娱乐奉献“听觉的艺术”。
+						</div>
+					</div>
+				</h2>
+			</div>
+		</div>
+    </div>
+</section>
+<section class="brand content">
+	<div class="ui responsive center aligned grid">
+		<div class="row">
+			<div class="left aligned twelve wide column">
+                <p>企业愿景</p>
+                <p>作为享誉行业的领导品牌及国际化音频品牌,麦博将以“创新 品质 价值”为核心发展理念,致力成为全球领先的音频系统整体解决 方案提供商。</p>
+
+                <p>企业使命</p>
+                <p>麦博坚持以客户为中心,为客户创造超凡价值。为大众提供无处不在的音乐享受、感受音乐的跳动脉博,为大众的生活、工作、娱 乐奉献“听觉的艺术”,是我们的企业使命。</p>
+
+                <p>品牌文化</p>
+                <p>英文"micro"为:"微电子及计算机科学"之意。为现代高新技术尤其是计算机及微电子产业的代名词。它代表了麦博的行业特征; "lab"是"实验室"之意,象征麦博的领先技术特征。 "microlab"从建立就致力于专业打造计算机科学的"微电子实验室",是科技和创新 的象征。</p>
+
+                <p>麦博DNA</p>
+                <ul class="ui list">
+                    <li class="item">创新:通过永不懈怠的创新与变革,追求科技、美学、声学的完美结合。</li>
+
+                    <li class="item">敬业:勤勉敬业、严谨思维,用有责任的态度达成使命;专注于品质优异、提升效率、降低成本、开创最大价值。</li>
+
+                    <li class="item">团结:凝聚团队、开放包容、关怀人文,让每位员工、每位渠道商都感受到彼此的真诚谦逊,感受到集体的关怀互助。</li>
+
+                    <li class="item">第一:超越自我、锐意进取,以第一为不断追求的目标。</li>
+                </ul>
+			</div>
+		</div>
+	</div>
+</section>
+{% endblock %}

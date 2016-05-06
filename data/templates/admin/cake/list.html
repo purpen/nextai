@@ -1,0 +1,53 @@
+{%extends 'layout/admin.html'%}
+
+{% block content %}
+	<h3 class="ui header">公告管理</h3>
+	
+	<div class="ui secondary pointing magenta menu">
+		<a href="{{ app_url_admin_base }}/cake" class="{{ css_all_cake }} item">全部列表</a>
+	  	<div class="right menu">
+			<a href="{{ app_url_admin_base }}/cake/edit" class="magenta item">
+				<i class="add icon"></i> 新增公告
+			</a>
+	    </div>
+	</div>
+	
+	{% cake_list var:'list' page:page %}
+	<table class="ui small table segment">
+		<thead>
+			<tr>
+				<th></th>
+				<th>公告内容</th>
+				<th>更新时间</th>
+				<th>管理操作</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for cake in list.rows %}
+			<tr id="{{ cake._id }}">
+				<td>
+					<div class="ui checkbox">
+					  	<input name="ids[]" type="checkbox" value="{{ cake._id }}" />
+					  	<label></label>
+					</div>
+				</td>
+				<td>{{ cake.content }}</td>
+				<td>{{ cake.updated_on|date 'y-m-d H:i' }}</td>
+				<td>
+					<div class="ui divided horizontal list">
+						<a href="{{ app_url_admin_base }}/cake/edit?id={{ cake._id }}" class="ui link item">编辑</a> 
+						<a href="{{ app_url_admin_base }}/cake/delete?id={{ cake._id }}" class="ui link item confirm-request">删除</a>
+					</div>
+				</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	
+	{% if list.total_page > 1 %}
+	<div class="ui pagination">
+		{% pager url:pager_url,total_rows:list.total_rows,total_page:list.total_page,current_page:page,var:'pager',pager_size:9 %}
+		{%include 'block/pager.html'%}
+	</div>
+	{% endif %}
+{% endblock %}

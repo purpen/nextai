@@ -1,0 +1,94 @@
+{%extends 'layout/base.html'%}
+{% block title%}销售网点-{% endblock %}
+{% block page_css %}
+<style type="text/css">
+    .ui.two.blocks {
+        margin-top: 20px;
+    }
+    .ui.two.blocks .ui.segment {
+        border: 1px solid rgba(34, 36, 38, 0.15) !important;
+        box-shadow: none;
+    }
+</style>
+{% endblock %}
+
+{% block jquery %}
+	$('.ui.dropdown').bind('change', function(){
+        var cid = $(this).find(':selected').val();
+        sher.redirect('{{ app_url_action_base }}/guide/outlets?city_id='+cid);
+    });
+{% endblock %}
+
+{% block content %}
+<section class="about submenu">
+	<div class="ui responsive grid">
+		<div class="row">
+			<div class="four wide column">
+				服务与支持
+			</div>
+			<div class="twelve wide right aligned column">
+				<div class="ui horizontal list">
+					<!--a href="{{ app_url_guide }}/finishsaled" class="{{ css_page_finishsaled }} item">售后服务</a-->
+                    <a href="{{ app_url_guide }}/finishsaled" class="{{ css_page_finishsaled }} item">服务条款</a>
+					<a href="{{ app_url_guide }}/outlets" class="{{ css_page_outlets }} item">销售网点</a>
+					<!--a href="{{ app_url_guide }}/store" class="{{ css_page_store }} item">门店展示</a-->
+                    <a href="http://113.98.196.141/tiaoma/index.asp?id=1&t=chan-pin-zhen-wei-cha-xun" class="{{ css_page_agreement }} item" target="_blank">防伪验证</a>
+                    <a href="ftp://113.98.196.130" class="{{ css_page_agreement }} item" target="_blank">资料下载</a>
+                </div>
+			</div>
+		</div>
+    </div>
+</section>
+
+<section class="service banner">
+	<div class="ui responsive center aligned grid">
+		<div class="row">
+			<div class="center aligned twelve wide column">
+				<h2 class="ui white header">
+					<div class="content">
+                        销售网点
+						<div class="sub header">我们随时为你提供帮助</div>
+					</div>
+				</h2>
+			</div>
+		</div>
+    </div>
+</section>
+<section class="service content">
+	<div class="ui responsive center aligned grid">
+        <div class="row">
+            <div class="left aligned twelve wide column">
+                <h3 class="ui left aligned dividing header">销售网点</h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="left aligned twelve wide column">
+                
+                <select class="ui dropdown" name="city_id">
+                    <option value="0">选择省市</option>
+                    {% for g in provinces %}
+                    <option value="{{ g._id }}" {% if city_id == g._id %}selected="selected"{% endif %}>{{ g.city }}</option>
+                    {% endfor %}
+                </select>
+                
+                <div class="ui two blocks">
+                    {% estore_list var:'list' city_id:city_id page:1 size:200  %}
+                    {% for store in list.rows %}
+                    <div class="block">
+                        <div class="ui segment">
+                            <h4 class="ui red header">{{ store.name }}</h4>
+                            <p>地址：{{ store.address }}</p>
+                            <p>电话：{{ store.phone }}</p>
+                            {% if store.fax %}
+                            <p>传真：{{ store.fax }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+            </div>
+        </div>
+	</div>
+</section>
+{% endblock %}

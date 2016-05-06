@@ -1,0 +1,278 @@
+{%extends 'layout/base.html'%}
+
+{% block page_css %}
+<style type="text/css">
+.shopcate.banner {
+	color: white;
+	padding: 0px;
+}
+.shopcate.banner > .ui.grid > .row {
+    padding: 0px;
+}
+.shopcate.banner > .ui.grid > .row > .column > a {
+    font-size: 0;
+    display: block;
+}
+.ui.horizontal.list > .item {
+    margin-left: 1.5em;
+}
+.flexslider {
+    background-color: rgb(247, 247, 247);
+}
+#carousel li .image {
+    display: inline-block;
+    overflow: hidden;
+    width: 240px;
+    max-height: 100px;
+}
+#carousel li .catitle {
+    margin-top: 10px;
+}
+#carousel li .catitle a.active {
+    color: rgb(214, 84, 84);
+}
+
+.active.category {
+    color: #222;
+    border-bottom: 2px solid #222;
+    padding-bottom: 5px;
+}
+
+
+.ui.products.blocks > .block {
+    position: relative;
+}
+.ui.products.blocks > .block > img {
+    width: 100%;
+}
+.ui.products.blocks > .block .cover {
+    position: absolute;
+    bottom: 0px;
+    left: 0;
+    index: 10;
+    width: 100%;
+    text-align: center;
+    padding: 20px 0px 20px;
+}
+.ui.products.blocks > .block .cover .title {
+    margin-bottom: 5px; 
+}
+.ui.products.blocks > .block > .cover a {
+    font-size: 16px;
+}
+.ui.products.blocks > .block:hover > .cover {
+    background-color: #e86161;
+    color: #fff;
+}
+.ui.products.blocks > .block:hover > .cover a {
+    color: #fff;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+{% category_list var:"list" istop:1 only_open:1 current:category_id show_all:0 %}
+{% if list.rows %}
+<div class="ui responsive grid">
+    <div class="row">
+        <div class="center aligned column">
+			<div class="ui horizontal list">
+                {% for cat in list.rows %}
+                    <a href="{{ cat.view_url }}" class="{{ cat.active }} item">{{ cat.title }}</a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+<div class="shopcate banner">
+    <div class="ui responsive grid">
+        <div class="row">
+            <div class="column">
+                {% if category_id == 1 %}
+                <a href="">
+                   <img src="/images/big/big_c1.jpg" /> 
+                </a>
+                {% endif %}
+                {% if category_id == 2 %}
+                <a href="">
+                   <img src="/images/big/big_c2.jpg" /> 
+                </a>
+                {% endif %}
+                {% if category_id == 3 %}
+                <a href="">
+                   <img src="/images/big/big_c3.jpg" /> 
+                </a>
+                {% endif %}
+                {% if category_id == 4 %}
+                <a href="">
+                   <img src="/images/big/big_c4.jpg" /> 
+                </a>
+                {% endif %}
+                {% if category_id == 5 %}
+                <a href="">
+                   <img src="/images/big/big_c5.jpg" /> 
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="shoplist">
+    
+    <div class="ui responsive grid">
+        
+        <div class="row">
+            <div class="center aligned column">
+                {% if category_id == 1 %}
+                <div class="ui horizontal list">
+                    <div class="item">
+                        <img src="/images/logo/logo_misfit.png" /> 
+                    </div>
+                    <div class="item">
+                        <img src="/images/logo/logo_up.png" /> 
+                    </div>
+                    <div class="item">
+                        <img src="/images/logo/logo_xiaomi.png" /> 
+                    </div>
+                    <div class="item">
+                        <img src="/images/logo/logo_fitbit.png" /> 
+                    </div>
+                    <div class="item">
+                        <img src="/images/logo/logo_bong2.png" /> 
+                    </div>
+                </div>
+                {% endif %}
+                
+                {% if category_id == 2 %}
+                <div class="ui horizontal list">
+                    <div class="item">
+                        <img src="/images/logo/logo_galaxy.png" /> 
+                    </div>
+                    <div class="item">
+                        <img src="/images/logo/logo_inwatch.png" /> 
+                    </div>
+                    <div class="item">
+                        <img src="/images/logo/logo_360.png" /> 
+                    </div>
+                    <div class="item">
+                        <img src="/images/logo/logo_linktop.png" /> 
+                    </div>
+                    <div class="item">
+                        <img src="/images/logo/logo_cat.png" /> 
+                    </div>
+                </div>
+                {% endif %}
+                
+                {% if category_id == 3 %}
+                <div class="ui horizontal list">
+                    <div class="item">
+                        <img src="/images/logo/logo_withings.png" /> 
+                    </div>
+                    <div class="item">
+                        <img src="/images/logo/logo_leravan.png" /> 
+                    </div>
+                    <div class="item">
+                        <img src="/images/logo/logo_lexin.png" /> 
+                    </div>
+                    <div class="item">
+                        <img src="/images/logo/logo_mecare.png" /> 
+                    </div>
+                    <div class="item">
+                        <img src="/images/logo/logo_rrioo.png" /> 
+                    </div>
+                    <div class="item">
+                        <img src="/images/logo/logo_picco.png" /> 
+                    </div>
+                    <div class="item">
+                        <img src="/images/logo/logo_ihealth.png" /> 
+                    </div>
+                </div>
+                {% endif %}
+                
+                {% if category_id == 4 %}
+                <div class="ui horizontal list">
+                    <div class="item">
+                        <img src="/images/logo/logo_yeelight.png" /> 
+                    </div>
+                    <div class="item">
+                        <img src="/images/logo/logo_ithink.png" /> 
+                    </div>
+                    <div class="item">
+                        <img src="/images/logo/logo_hair.png" /> 
+                    </div>
+                    <div class="item">
+                        <img src="/images/logo/logo_konke.png" /> 
+                    </div>
+                    <div class="item">
+                        <img src="/images/logo/logo_ezviz.png" /> 
+                    </div>
+                    <div class="item">
+                        <img src="/images/logo/logo_broadlink.png" /> 
+                    </div>
+                    <div class="item">
+                        <img src="/images/logo/logo_dreammaker.png" /> 
+                    </div>
+                    <div class="item">
+                        <img src="/images/logo/logo_air.png" /> 
+                    </div>
+                </div>
+                {% endif %}
+                
+                
+                {% if category_id == 5 %}
+                <div class="ui horizontal list">
+                    <div class="item">
+                        <img src="/images/logo/logo_parrot.png" /> 
+                    </div>
+                    <div class="item">
+                        <img src="/images/logo/logo_hootoo.png" /> 
+                    </div>
+                    <div class="item">
+                        <img src="/images/logo/logo_autobot.png" /> 
+                    </div>
+                    <div class="item">
+                        <img src="/images/logo/logo_jbl.png" /> 
+                    </div>
+                    <div class="item">
+                        <img src="/images/logo/logo_55.png" /> 
+                    </div>
+                    <div class="item">
+                        <img src="/images/logo/logo_antvr.png" /> 
+                    </div>
+                </div>
+                {% endif %}
+                
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="column">
+                {% product_list var:'products' category_id:category_id published:2 page:page size:12 %}
+                
+                {% if products.rows %}
+                <div class="ui two products blocks">
+                    {% for product in products.rows %}
+                    <div class="block">
+                        <img src="{{ product.cover.fileurl }}" />
+                                                
+                        <div class="cover">
+                            <h4 class="title">
+                                <a href="{{ product.view_url }}" title="{{ product.title }}">{{ product.title }}</a>
+                            </h4>
+                            <p class="advantage">{{ product.advantage }}</p>
+                        </div>
+                        
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                
+            </div>
+        </div>
+        
+    </div> 
+</div>
+{% endblock %}

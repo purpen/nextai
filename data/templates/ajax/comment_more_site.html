@@ -1,0 +1,77 @@
+<taconite>
+
+    {% comment_list var:'comments' page:page target_id:target_id type:type size:per_page sort:sort check_loved:1 current_user_id:current_user_id %}
+    {% if page == 1 %}
+    <replace select=".is-comment.comments"><![CDATA[
+        <div class="ui threaded comments is-comment">
+            {% for comment in comments.rows %}
+                {%include 'block/comment_item.html'%}
+            {% endfor %}
+        </div>
+    ]]></replace>
+    {% else %}
+        {% for comment in comments.rows %}
+            <append select=".is-comment.comments"><![CDATA[
+                {%include 'block/comment_item.html'%}
+            ]]></append>
+        {% endfor %}
+    {% endif %}
+    
+    {% if page == 1 %}
+    <replace select="#load-more-btn"><![CDATA[
+        <div class="morepages" id="load-more-btn">
+        {% if comments.rows %}
+            {% if page < comments.total_page %}
+                <a href="javascript:void(0);" class="fluid ui grey more inverted button" total-page="{{ comments.total_page }}" current-page="{{ page }}">
+                    <i class="spinner icon"></i> 查看更多
+                </a>
+            {%endif%}
+        {% endif %}
+        </div>
+    ]]></replace>
+    {%endif%}
+    
+    {% if sort == 1 %}
+        <remove select=".ui.hotest.comments" />
+    {% endif %}
+
+    <eval><![CDATA[
+        // 查看大图
+        $('.comment-img-box').livequery(function(){
+          $(this).on('click', function(){
+              var evt = $(this).attr('show-type');
+              if(evt == 1){
+                  $(this).find('img')
+                      .css({'max-width':'100%', 'cursor':'-webkit-zoom-out', 'cursor':'-moz-zoom-out', 'cursor':'-ms-zoom-out', 'cursor':'-o-zoom-out'});
+                  $(this).attr('show-type', 2);
+              }else{
+                  $(this).find('img').css({'max-width':'150px', 'cursor':'-webkit-zoom-in', 'cursor':'-moz-zoom-in', 'cursor':'-ms-zoom-in', 'cursor':'-o-zoom-in'});
+                  $(this).attr('show-type', 1);
+              }
+          });
+        });
+
+        var total_page = parseInt("{{ comments.total_page }}");
+        var current_page = parseInt("{{ page }}");
+        var per_page = parseInt("{{ per_page }}");
+        
+        if(current_page >= total_page && total_page != 1 && current_page != 1){
+            var html = '<a class="fluid ui grey more inverted disabled button" href="javascript:void(0);">没有更多~~</a>';
+            $('#load-more-btn')
+                .html(html)
+                .unbind('click');
+        }
+        
+        if(current_page == 1){
+            $('#load-more-btn').click(function(){
+                fetch_comment(current_page+1, per_page, {{ sort }});
+            });
+        }
+        
+        $('.ui.sticky')
+          .sticky('refresh')
+        ;
+    ]]></eval>
+
+</taconite>
+

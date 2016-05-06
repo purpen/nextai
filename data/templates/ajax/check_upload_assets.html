@@ -1,0 +1,22 @@
+<taconite>
+	<prepend select="#asset-list"><![CDATA[
+		{% for asset in asset_list %}
+		<div class="thumb block" id="{{ asset._id }}">
+			<div class="image">
+				<img src="{{ asset.thumbnails.mini.view_url }}" />
+				<input type="hidden" class="asset_id_list" name="asset[]" value="{{ asset._id }}" />
+			</div>
+			<div class="buttons">
+				<div class="ui links">
+					<a href="/app/site/fever/delete_asset?id={{ id }}&asset_id={{ asset._id }}&asset_domain={{ asset_domain }}" class="ui link ajax pop" data-content="删除此缩略图？" data-variation="inverted">
+						<i class="remove icon"></i>
+					</a>
+					<a href="javascript:void(0);" class="ui link ajax-cover pop" data-content="设置封面图" data-variation="inverted" data-value="{{ asset._id }}">
+						<i class="checkered flag icon"></i>
+					</a>
+				</div>
+			</div>
+		</div>
+		{% endfor %}
+	]]></prepend>
+</taconite>

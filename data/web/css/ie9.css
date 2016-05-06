@@ -1,0 +1,186 @@
+.clearfix:after {
+    content: "."; 
+    display: block;
+    clear: both; 
+    visibility: hidden;
+    line-height: 0; 
+    height: 0;
+}
+.clearfix {display: inline-table; +display:inline-block;}/* Hides from IE-mac \*/* html .clearfix {height: 1%;}.clearfix {display: block;}
+.ui.secondary.pointing.menu .item {
+    color: #ffffff !important;
+    padding: 0.857143em 1.14286em;
+    display: inline-block;
+    font-size: 16px !important;
+    float: left;
+}
+.ui.secondary.pointing.menu .img.item {
+    width: 190px !important;
+    padding-top: 0.85em !important;
+}
+.ui.secondary.pointing.menu .icon.item {
+    width: 40px !important;
+    padding-top: 0.95em !important;
+}
+.ui.secondary.pointing.menu .right.menu {
+    float: right;
+    width: 200px !important;
+}
+.ui.secondary.pointing.menu .right.menu.visitor {
+    padding-top: 0.85em !important;
+    width: 210px !important;
+}
+.ui.secondary.pointing.menu .right.menu .ui.dropdown.account.item {
+    width: 160px !important;
+}
+.ui.secondary.pointing.menu .right.menu .ui.dropdown.account.item .item {
+    padding-right: 0.4em;
+    padding-left: 0.4em;
+}
+.ui.secondary.pointing.menu .right.menu .ui.dropdown.account.item .menu {
+    display: none;
+}
+
+.login.box {
+    width: 600px !important;
+}
+.ui.grid > .four.wide.column,
+.ui.grid > .row > .four.wide.column {
+    width: 25% !important;
+}
+.ui.grid > .eight.wide.column,
+.ui.grid > .row > .eight.wide.column {
+    width: 49.5% !important;
+}
+.ui.grid > .twelve.wide.column,
+.ui.grid > .row > .twelve.wide.column {
+    width: 74.5% !important;
+}
+.ui.grid > .row > .six.wide.column {
+    width: 45% !important;
+}
+.ui.grid .right.aligned.column {
+    text-align: right;
+}
+.ui.grid .four.column.row .column {
+    width: 24.5% !important;
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+}
+.ui.grid .four.column.row .column .xitem {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+}
+
+.footer .ui.grid .row .column {
+    width: 19.5% !important;
+}
+
+.ui.horizontal.segments .ui.segment {
+    width: 200px;
+    float: left;
+}
+.ui.table {
+    width: 100% !important;
+}
+.ui.table td {
+    padding: 12px 0px;
+}
+.adminbd .ui.vertical.menu {
+    border: 1px solid rgba(34, 36, 38, 0.15)
+}
+.adminbd .ui.vertical.menu .item {
+    padding: 0.928571em 1.14286em;
+    display: block;
+}
+.adminbd .ui.secondary.pointing.magenta.menu {
+    border-bottom: 2px solid #ccc;
+}
+.adminbd .ui.secondary.pointing.magenta.menu .item {
+    color: #333333 !important;
+}
+.adminbd .ui.secondary.pointing.magenta.menu .right.menu {
+    width: 300px !important;
+}
+.adminbd .ui.secondary.pointing.magenta.menu .right.menu .item {
+    width: 100px !important;
+    color: #333333;
+    padding-right: 3px !important;
+    padding-left: 3px !important;
+}
+
+.ui.selection.dropdown {
+    background: rgb(255, 255, 255) none repeat scroll 0 0;
+    border: 1px solid rgb(34, 36, 38);
+    color: rgba(0, 0, 0, 0.87);
+    cursor: pointer;
+    display: inline-block;
+    line-height: 1em;
+    min-height: 2.7142em;
+    min-width: 14em;
+    outline: 0 none;
+    padding: 0.785714em 2.6em 0.785714em 1em;
+    white-space: normal;
+    word-wrap: break-word;
+}
+.ui.dropdown .menu > .item {
+    color: rgba(0, 0, 0, 0.87);
+    cursor: pointer;
+    display: block;
+    font-size: 1rem;
+    font-weight: normal;
+    line-height: 1em;
+    padding: 0.714286rem 1.14286rem !important;
+    position: relative;
+    text-align: left;
+}
+
+
+.ui.cards > .card {
+    width: 200px;
+    float: left;
+    overflow: hidden;
+    margin: 15px 20px 15px 0px;
+    border: 1px solid rgb(212, 212, 213);
+}
+.ui.cards > .card > .image > img {
+    width: 100% !important;
+}
+.ui.three.cards > .card {
+    width: 360px;
+}
+.ui.four.cards > .card {
+    width: 260px;
+}
+.ui.three.store.cards > .card {
+    height: 300px;
+}
+.ui.four.prize.cards > .card {
+    height: 260px;
+}
+
+.ui.pagination.menu .item {
+    display: inline-block;
+    font-size: 16px !important;
+    float: left;
+    line-height: 1;
+    padding: 0.928571em 1.14286em;
+}
+
+.ui.message {
+    border: 1px solid rgba(34, 36, 38, 0.22);
+    width: 100%;
+    font-size: 16px;
+    background-color: rgb(248, 248, 249);
+    line-height: 1.4285em;
+    padding: 1em 1.5em;
+}
+.ui.icon.message .icon {
+    display: block;
+    font-size: 22px;
+    line-height: 1;
+    opacity: 0.8;
+    vertical-align: middle;
+    width: 30px;
+    float: left;
+}

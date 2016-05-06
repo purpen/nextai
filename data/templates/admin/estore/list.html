@@ -1,0 +1,103 @@
+{%extends 'layout/admin.html'%}
+{% block page_css %}
+<style type="text/css">
+    .attribute {
+        font-size: 12px;
+        color: #666;
+    }
+</style>
+
+{% endblock %}
+
+{% block jquery %}
+	
+{% endblock %}
+	
+{% block content %}
+	<h3 class="ui header">销售网点管理</h3>
+	
+	<div class="ui secondary pointing orange menu">
+		<a href="{{ app_url_admin_base }}/estore" class="{% if !approved %}active{%endif%} item">
+			<i class="list icon"></i> 全部网点
+		</a>
+	  	<div class="right menu">
+			<a href="{{ app_url_admin_base }}/estore/edit" class="item">
+				<i class="edit icon"></i> 新增网点
+			</a>
+	    </div>
+	</div>
+	
+	<div class="ui sub nav">
+		<form action="{{ app_url_admin_base }}/estore/search" method="get">
+            <input type="hidden" name="stage" value="{{ stage }}" />
+			<label>搜索：</label>
+			<div class="ui icon input">
+                <input placeholder="关键词..." type="text" name="q" value="{{ q }}" />
+				<i class="flat search link icon"></i>
+			</div>
+        </form>
+	</div>
+	
+	<table class="ui small table segment">
+		<thead>
+			<tr>
+				<th>
+					<div class="ui checkbox">
+					  	<input name="ids" type="checkbox" />
+					  	<label></label>
+					</div>
+				</th>
+				<th class="five wide">网点名称</th>
+                <th>所属地区</th>
+				<th>管理操作</th>
+			</tr>
+		</thead>
+		<tbody>
+	      {% if is_search %}
+		      {% estore_list var:'list' page:page approved:approved %}
+	      {%else%}
+		      {% estore_list var:'list' page:page approved:approved %}
+	      {%endif%}
+
+			{% for store in list.rows %}
+			<tr id="{{ store._id }}">
+				<td>
+					<div class="ui checkbox">
+					  	<input name="ids" type="checkbox" value="{{ store._id }}" class="checkbox" />
+					  	<label></label>
+					</div>
+				</td>
+				<td>
+		          	<div class="header">
+						<a href="{{ store.view_url }}" class="ui link" target="_blank" title="{{ store.name }}">
+							{{ store.name|truncate, 32 }}
+						</a>
+                        <div class="sub header">
+                            <label class="attribute">编号：{{ store._id }}</label>
+                        </div>
+					</div>
+				</td>
+				<td>
+					<i class="marker icon"></i> {{ store.province.city }}
+                    <p class="attribute">{{ store.address }}</p>
+				</td>
+				<td>
+					<p>
+						<a href="{{ app_url_admin_base }}/estore/edit?id={{ store._id }}&page={{ page }}" class="ui link item">编辑</a>
+		          		<a href="{{ app_url_admin }}/estore/deleted?id={{ store._id }}" class="ui confirm-request link item">
+						    删除
+					    </a>
+					</P>
+				</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	
+	{% if list.rows %}
+	<div class="ui pagination">
+		{% pager url:pager_url,total_rows:list.total_rows,total_page:list.total_page,current_page:page,var:'pager',pager_size:9 %}
+		{%include 'block/pager.html'%}
+	</div>
+	{% endif %}
+{% endblock %}

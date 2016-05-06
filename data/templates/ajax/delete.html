@@ -1,0 +1,12 @@
+<taconite>
+	{% for id in ids %}
+		<remove select="#{{id}}" />
+		<remove select="#item_{{id}}" />
+		<remove select="#item-{{id}}" />
+	{% endfor %}
+	{% if redirect_url %}
+		<eval>
+			sher.redirect('{{ redirect_url }}',500);
+		</eval>
+	{% endif %}
+</taconite>

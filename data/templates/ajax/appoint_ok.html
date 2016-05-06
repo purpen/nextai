@@ -1,0 +1,26 @@
+<taconite>
+	<replace select=".ui.appoint.btn">
+	 	<div class="ui active btn-4 btn-4c icon-arrow-right black btn">
+			<span>预约成功</span>
+		</div>
+	</replace>
+	
+ 	<replace select="#modal-header">
+		<div class="ui header" id="modal-header">
+			<span class="ui magenta text"></span>分享至
+		</div>
+	</replace>
+	
+	<replace select="#appoint_people_count">
+		<span id="appoint_people_count">{{ product.appoint_count }}</span>
+	</replace>
+	
+	<eval>
+		$('#addbook-form')
+			.addClass('hide')
+			.clearForm();
+			
+		$('#share-friends')
+			.removeClass('hide');
+	</eval>
+</taconite>

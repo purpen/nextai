@@ -1,0 +1,178 @@
+{%extends 'layout/column.html'%}
+{% block title %}{{ user.screen_name }}-{% endblock %}
+{% block page_css %}
+<style type="text/css">
+    
+</style>
+{% endblock %}
+{% block js %}
+{% endblock %}
+{% block jquery %}
+	// 显示私信框
+	$('.ui.letter.button').bind('click', function(){
+		$('.ui.letter.modal').modal('show');
+	});
+	// 隐藏私信框
+	$('.ui.cancel.button').bind('click', function(){
+		$('.ui.letter.modal').modal('hide');
+	});
+	
+	$('#message-form').form({
+		content: {
+			identifier  : 'content',
+			rules: [
+				{
+					type   : 'empty',
+					prompt : '评论内容不能为空'
+				},
+				{
+					type   : 'maxLength[140]',
+					prompt : '评论内容不超过140字符'
+				}
+			]
+		}
+	}, {
+		inline : true,
+		onSuccess: function(event){
+			event.preventDefault();
+			$(this).ajaxSubmit({
+				dataType: 'json',
+				beforeSubmit: function(){
+					phenix.before_submit();
+				},
+				success: function(data){
+					phenix.after_submit();
+					
+					if(data.is_error){
+						$(event.target).addClass('error');
+						phenix.show_error_note(data.message, event.target);
+					}else{
+            $('.ui.letter.modal').modal('hide');
+            phenix.show_ok_note('私信发送成功!');
+            $(':input[name=content]').val('');
+            $(":input[name='users[]']").attr('checked', false);
+					}
+				}
+			});
+		}
+	});
+	
+	$('[data-countdown]').each(function() {
+		var $this = $(this), finalDate = $(this).data('countdown');
+		$this.countdown(finalDate, function(event) {
+			$this.html(event.strftime('%-D'));
+		});
+	});
+	
+{% endblock %}
+
+{% block content %}
+<div class="user masthead" style="background-image: url('{{ app_url_packaged }}/images/headbg/ucenter-{{ last_char |default 0 }}.jpg');">
+    <div class="masthead-cover">
+    	<div class="ui responsive grid">
+    		<div class="row">
+    			<div class="column">
+    				<div class="container">
+                        <img src="{{ user.big_avatar_url }}" class="ui big avatar image" />
+                    		{% if user.symbol %}
+												<img src="{{ app_url_packaged }}/images/V.png" class="image-UV{%if user.symbol==2%} blue{%endif%}">
+                        {%endif%}
+                    	<h2 class="ui header">
+                    		{{ user.nickname }}
+                    	</h2>
+                    	<p class="summary">{{ user.summary }}</p>
+                    	{% if user._id != visitor.id %}
+                    	{% if !is_ship %}
+                    	<a href="{{ app_url_user }}/ajax_follow?id={{ user._id }}" class="ui small white inverted button ajax" id="user_{{ user._id }}_ship">
+                    		关注 
+                    	</a>
+                    	{% else %}
+                    	<a href="{{ app_url_user }}/ajax_cancel_follow?id={{ user._id }}" class="ui small white inverted button ajax" id="user_{{ user._id }}_ship">已关注</a>
+                    	{% endif %}
+
+                    	<button class="ui small white letter inverted button">
+                    		私信
+                    	</button>
+                    	{% endif %}
+                    </div>
+    			</div>
+    		</div>
+        </div>
+    </div>
+</div>
+
+{%include 'block/user_submenu.html'%}
+
+<div class="user center">
+    <div class="ui responsive grid">
+        <div class="row">
+            <div class="column">
+				<div class="ui horizontal bulleted list">
+                    <a class="{{ css_tab_submit }} item" href="{{ app_url_user }}/{{ user._id }}/submitted">
+                        提交
+                    </a>
+                    <a class="{{ css_tab_support }} item" href="{{ app_url_user }}/{{ user._id }}/support">
+                        支持
+                    </a>
+                    <a class="{{ css_tab_like }} item" href="{{ app_url_user }}/{{ user._id }}/like">
+                        赞过
+                    </a>
+				</div>
+                <div class="ui compact grid">
+                    <div class="twelve wide column">
+        				{% if css_tab_submit %}
+        					<div class="ui three products voteist cards">
+        						<!--我提交的产品-->
+        						{% product_list var:'list' page:page user_id:user._id size:15 %}
+        						{% for product in list.rows %}
+                                    {% if product %}
+                                        {% include "block/product_card.html" %}
+                                    {% endif %}
+        						{% endfor %}
+        					</div>
+        				{% endif %}
+                        
+        				{% if css_tab_support %}
+        					<!--我支持的产品-->
+        					{% support_list var:'list' page:page user_id:user._id %}
+        					<div class="ui three products voteist cards">
+        						{% for item in list.rows %}
+                                    {% if item.product %}
+                                        {% include "block/product_item_card.html" %}
+                                    {% endif %}
+        						{% endfor %}
+        					</div>
+        				{% endif %}
+                        
+        				{% if css_tab_like %}
+        					<div class="ui three products voteist cards">
+        						<!--我喜欢的产品-->
+        						{% like_list var:'list' page:page user_id:user._id type:1 %}
+        						{% for item in list.rows %}
+                                    {% if item.product %}
+                                        {% include "block/product_item_card.html" %}
+                                    {% endif %}
+        						{% endfor %}
+        					</div>
+        				{% endif %}
+                        
+                		{% if list.total_page > 1 %}
+                		<div class="ui pagebox">
+                			{% pager url:pager_url,total_rows:list.total_rows,total_page:list.total_page,current_page:page,var:'pager',pager_size:9 %}
+                			{%include 'block/pager.html'%}
+                		</div>
+                		{% endif %}
+                    </div>
+                    <div class="four wide column">
+                        {%include 'block/user_rightbar.html'%}
+                    </div>
+                    
+                </div>
+            </div>
+		</div>
+	</div>
+</div>
+
+{% include "block/message.html" %}
+
+{% endblock %}

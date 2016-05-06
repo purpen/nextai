@@ -1,0 +1,45 @@
+{%extends 'layout/base.html'%}
+{% block title %}现在注册-{% endblock %}
+
+{% block jquery %}
+	sher.build_auth_page();
+
+    $('.ui.green.icon.button').bind('click', function(){
+        $('.ui.share.basic.modal').modal('show');
+    });
+{% endblock %}
+
+{% block content %}
+<div class="ui responsive grid">
+    <div class="row">
+        <div class="four wide column"></div>
+        <div class="eight wide column width">
+    		<div class="login box">
+    			<h2 class="ui center aligned header">注册</h2>
+				<!-- 普通方式登陆 -->
+				<form action="{{ app_url_action_base }}/auth/do_register" class="ui form auth" method="post" id="login-form">                    
+					<div class="field">
+					  	<input type="text" name="account" placeholder="手机号码" />
+					</div>
+					<div class="field">
+					  	<input type="password" name="password" id="password" placeholder="密码" />
+					</div>
+					<div class="field">
+					  	<input type="password" name="password_confirm" id="password_confirm" placeholder="确认密码" />
+					</div>
+		
+					<div class="field">
+						<div class="fluid ui large active red inverted submit button">登录</div>
+					</div>
+				</form>
+    			<div class="sign-up">
+    				已有账号？<a href="{{ app_url_login }}" title="立即登录">立即登录</a>
+    			</div>
+
+    		</div>
+			
+        </div>
+        <div class="column"></div>
+    </div>
+</div>
+{% endblock %}

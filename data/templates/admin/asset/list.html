@@ -1,0 +1,77 @@
+{%extends 'layout/admin.html'%}
+
+{% block content %}
+	<h3 class="ui header">附件列表</h3>
+	
+	<div class="ui secondary pointing magenta menu">
+		<a href="{{ app_url_admin_base }}/asset" class="active item">
+			全部列表
+		</a>
+	  	<div class="right menu">
+			<a href="{{ app_url_admin_base }}/asset/upload" class="item">
+				<i class="upload icon"></i> 上传图片
+			</a>
+	    </div>
+	</div>
+	<div class="ui sub nav">
+		<div class="ui horizontal list">
+            <label class="item">类型：</label>
+            <a href="{{ app_url_admin_base }}/asset?domain=product" class="{% if domain == 'product' %}active {% endif %}item">产品图片</a>
+            <a href="{{ app_url_admin_base }}/asset?domain=asset" class="{% if domain == 'asset' %}active {% endif %}item">大图推荐</a>
+            <a href="{{ app_url_admin_base }}/asset?domain=topic" class="{% if domain == 'topic' %}active {% endif %}item">新闻图片</a>
+        </div>
+	</div>
+    
+	{% asset_list var:'list' page:page domain:domain %}
+	<table class="ui small table segment">
+		<thead>
+			<tr>
+				<th>
+					<div class="ui checkbox">
+					  	<input name="ids[]" type="checkbox" />
+					  	<label></label>
+					</div>
+				</th>
+				<th>缩略图</th>
+				<th class="six wide">文件名</th>
+				<th>最后更新时间</th>
+				<th>文件大小</th>
+				<th>操作</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for asset in list.rows %}
+			<tr id="{{ asset._id }}">
+				<td>
+					<div class="ui checkbox">
+					  	<input name="ids[]" type="checkbox" value="{{ asset._id }}" />
+					  	<label></label>
+					</div>
+				</td>
+				<td>
+					<img src="{{ asset.thumbnails.mini.view_url }}" class="ui image" width="120px" />
+				</td>
+				<td>
+					ID: {{ asset._id }}<br />
+                    Url: {{ asset.view_url }}
+				</td>
+				<td>{{ asset.created_on|date 'Y-m-d H:i:s' }}</td>
+				<td>
+					{{ asset.size|filesize }}
+				</td>
+				<td>
+					<a href="{{ app_url_admin }}/asset/delete?id={{ asset._id }}" class="ui ajax link">删除</a>
+				</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	
+	{% if list.total_page > 1 %}
+	<div class="ui pagination">
+		{% pager url:pager_url,total_rows:list.total_rows,total_page:list.total_page,current_page:page,var:'pager',pager_size:9 %}
+		{%include 'block/pager.html'%}
+	</div>
+	{% endif %}
+	
+{% endblock %}

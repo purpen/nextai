@@ -1,0 +1,85 @@
+{%extends 'layout/base.html'%}
+{% block title%}资质荣誉-{% endblock %}
+
+{% block content %}
+<section class="about submenu">
+	<div class="ui responsive grid">
+		<div class="row">
+			<div class="four wide column">
+				关于我们
+			</div>
+			<div class="twelve wide right aligned column">
+				<div class="ui horizontal list">
+                    <a href="{{ app_url_guide }}/about" class="{{ css_page_about }} item">公司介绍</a>
+                    <a href="{{ app_url_guide }}/brand" class="{{ css_page_brand }} item">品牌文化</a>
+                    <a href="{{ app_url_guide }}/history" class="{{ css_page_history }} item">发展纪事</a>
+                    <a href="{{ app_url_guide }}/prize" class="{{ css_page_prize }} item">资质荣誉</a>
+                </div>
+			</div>
+		</div>
+    </div>
+</section>
+
+<section class="prize banner">
+	<div class="ui responsive center aligned grid">
+		<div class="row">
+			<div class="center aligned twelve wide column">
+				<h2 class="ui white header">
+					<div class="content">
+						资质荣誉
+						<div class="sub header"> 麦博在全世界56个国家和地区注册了商标和图型等知识产权，拥有二十余项专利技术和独立进出口权。麦博担任了国家相关行业标准的副组长起草单位，是中国音响协会的理事单位。麦博荣获“广东省著名商标”认定，多次获得政府职能部门颁发的权威奖项、国内及国际多项产品大奖，及行业媒体颁予的众多奖项。
+						</div>
+					</div>
+				</h2>
+			</div>
+		</div>
+    </div>
+</section>
+<section class="prize content">
+    <div class="ui responsive grid">
+		<div class="row">
+			<div class="center aligned column">
+                {% ad_list var:'prizelist' page:1 size:500 state:2 name:'prize_list' %}
+                <div class="ui four prize cards">
+                    {% for prize in prizelist.rows %}
+                    <div class="card">
+                        <div class="image">
+                            <img src="{{ prize.cover.fileurl }}" />
+                        </div>
+                        <div class="content">
+                            <div class="description">
+                                {{ prize.title }}<br>
+                                {{ prize.sub_title }}<br>
+                                <span class="red">{{ prize.summary }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+            </div>
+        </div>
+		<div class="row">
+			<div class="center aligned column">
+                <h3 class="ui left aligned dividing header">认证</h3>
+                <div class="ui four cards">
+                    {% ad_list var:'zhenglist' page:1 size:500 state:2 name:'renzheng_list' %}
+                    {% for zheng in zhenglist.rows %}
+                    <div class="card">
+                        <div class="image">
+                            <img src="{{ zheng.cover.fileurl }}" />
+                        </div>
+                        <div class="content">
+                            <div class="description">
+                                {{ zheng.title }}<br>
+                                {{ zheng.sub_title }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+	</div>
+</section>
+{% endblock %}

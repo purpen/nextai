@@ -1,0 +1,204 @@
+{%extends 'layout/base.html'%}
+{% block title %}{{ product.title }}-{% endblock %}
+
+{% block page_css %}
+<style type="text/css">
+.product.bread {
+    background-color: #f7f7f7;
+    margin: 0px auto 15px;
+}
+.ui.subnav.divided.list {
+    margin: 0 10px 0 20px;
+}
+.ui.subnav.divided.list > .item {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+.product.content .desc > p {
+    margin: 0 !important;
+}
+.product.content .desc img.fr-fin {
+    box-sizing: content-box;
+    display: block;
+    margin: 0 auto;
+}
+.product.content .desc img.fr-fin.fr-dib {
+    max-width: 100%;
+}
+.ui.breadcrumb a.section {
+    color: #555;
+}
+.price {
+    color: #d65454;
+    font-size: 18px;
+}
+.price small {
+    font-size: 12px;
+}
+.attrs {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 20px;
+}
+.attrs.buy {
+    padding-top: 20px;
+}
+.attrs.buy .quantity {
+    border: 1px solid #eee;
+    padding: 3px 5px;
+    text-align: center;
+    width: 50px;
+}
+.mode.attrs {
+    padding-top: 20px;
+}
+
+.btns {
+    padding-top: 20px;
+}
+
+</style>
+{% endblock %}
+
+{% block jquery %}
+    
+    $('#carousel').flexslider({
+        animation: "slide",
+        controlNav: false,
+        animationLoop: false,
+        slideshow: false,
+        itemWidth: 120,
+        itemMargin: 10,
+        asNavFor: '#slider'
+    });
+
+    $('#slider').flexslider({
+        animation: "slide",
+        controlNav: false,
+        animationLoop: false,
+        slideshow: false,
+        sync: "#carousel"
+    });
+          
+	// 如果仅一个sku,则设置默认值
+	{% if skus_count %}
+		var choosed_sku = 0;
+	{% else %}
+		var choosed_sku = {{ product._id }};
+	{% endif %}
+    
+	// 选择sku
+	$('.attrs .ui.att.button').click(function(){
+		choosed_sku = $(this).data('id');
+		$('.attrs .ui.att.active.button').removeClass('active');
+		$(this).addClass('active');
+        $('#current-price').html('<small class="unit"><i class="yen icon"></i></small>'+$(this).data('price'));
+		return false;
+	});
+    
+	// 加入购物车
+	$('.ui.tobuy.button').click(function(){
+        // 所有ajax请求，验证是否登录
+        if (!sher.visitor.is_login){
+            sher.show_login_box();
+            return false;
+        }
+		if (choosed_sku){
+			$.post('{{ app_url_cart_buy }}', {sku: choosed_sku});
+		} else {
+			sher.show_error_note('请选择一个型号或颜色', 3000);
+		}
+	});
+    
+  	// 立即购买
+    $('.ui.nowbuy.button').livequery(function(){
+        $(this).click(function(){
+            // 所有ajax请求，验证是否登录
+            if (!sher.visitor.is_login){
+                sher.show_login_box();
+                return false;
+            }
+            if (choosed_sku){
+                sher.redirect('{{ app_url_cart_nowbuy }}?sku='+choosed_sku, 0);
+            } else {
+                sher.show_error_note('请选择一个型号或颜色', 3000);
+            }
+          }); 
+    });
+
+{% endblock %}
+
+{% block content %}
+<div class="product bread">
+    <div class="ui responsive grid">
+        <div class="row">
+            <div class="column">
+                <div class="ui breadcrumb">
+                    <a class="section" href="{{ app_url_domain }}">首页</a>
+                    <i class="right angle icon divider"></i>
+                    <div class="section">产品</div>
+                    <i class="right angle icon divider"></i>
+                    <div class="active section">{{ product.title }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="product info">
+    <div class="ui responsive grid">
+        <div class="row">
+            <div class="eight wide column">
+                {% asset_list var:'assets' parent_id:product._id asset_type:10 size:20 %}
+                <div id="slider" class="flexslider">
+                    <ul class="slides">
+                        <li><img src="{{ product.cover.thumbnails.large.view_url }}" /></li>
+						{% for asset in assets.rows %}
+                            {% if product.cover_id != asset._id %}
+                            <li><img src="{{ asset.thumbnails.large.view_url }}" /></li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+                
+                <div id="carousel" class="flexslider">
+                    <ul class="slides">
+                        <li><img src="{{ product.cover.thumbnails.mini.view_url }}" /></li>
+						{% for asset in assets.rows %}
+                            {% if product.cover_id != asset._id %}
+                            <li><img src="{{ asset.thumbnails.mini.view_url }}" /></li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            
+            </div>
+            <div class="eight wide column">
+                <div class="attrs">
+                    <h3 class="ui header">{{ product.title }}</h3>
+                    <p>{{ product.summary }}</p>
+                </div>
+                {% if skus %}
+                    <div class="mode attrs">
+                        颜色型号：
+                        {% for m in skus %}
+                            <span class="ui inverted magenta att button" data-id="{{ m._id }}" data-price="{{ m.price }}">{{ m.mode }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                <div class="attrs buy">
+                    <p>购买数量： <input type="text" value="1" name="quantity" class="quantity" /></p>
+                    <p>优惠价格： <span class="price" id="current-price"><small class="unit"><i class="yen icon"></i></small>{{ product.sale_price }}</span></p>
+                </div>
+                
+                <div class="btns">
+                    <div class="ui inverted black tobuy large active button">加入购物车</div>
+                    <div class="ui inverted red nowbuy large active button">立即购买</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    
+{% include "block/loginbox.html" %}
+
+{% endblock %}

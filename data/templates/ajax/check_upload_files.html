@@ -1,0 +1,17 @@
+<taconite>
+	<prepend select="#files-list"><![CDATA[
+		{% for asset in asset_list %}
+		<div class="thumb block" id="{{ asset._id }}">
+			<input type="hidden" class="file_id_list" name="file_asset[]" value="{{ asset._id }}" />
+            <div class="buttons">
+                <div class="ui links">
+                    <span><i class="file image outline icon"></i>{{ asset.filename|truncate 16, '' }}</span>
+                    <a href="{{ app_url_asset }}/deleted?asset_id={{ asset._id }}&asset_domain={{ asset_domain }}" class="ui link ajax pop" data-content="删除" data-variation="inverted">
+					    <i class="remove icon"></i>
+				    </a>
+                </div>
+            </div>
+		</div>
+		{% endfor %}
+	]]></prepend>
+</taconite>

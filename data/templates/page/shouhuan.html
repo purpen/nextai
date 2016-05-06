@@ -1,0 +1,143 @@
+{%extends 'layout/base.html'%}
+
+{% block page_css %}
+<style type="text/css">
+    .flexslider .slides li {
+        height: 500px;
+    }
+    .flexslider .slides li a {
+        display: inline-block;
+        width: 100%;
+        height: 500px;
+        overflow: hidden;
+    }
+    .flex-control-nav {
+        bottom: -27px;
+    }
+    
+    .flex-direction-nav a {
+        height: 500px;
+        width: 50px;
+        top: 0;
+        margin: 0;
+   }
+   .flex-direction-nav a::before {
+       font-size: 36px;
+       color: #fff;
+       position: relative;
+       top: 210px;
+   }
+   .flex-direction-nav a.flex-prev {
+       left: -50px;
+       text-align: center;
+   }
+   .flex-direction-nav a.flex-next {
+       right: -50px;
+       text-align: center;
+   }
+   .flexslider:hover .flex-direction-nav a.flex-prev {
+       left: 0;
+   }
+   .flexslider:hover .flex-direction-nav a.flex-next {
+       right: 0;
+   }
+   
+</style>
+{% endblock %}
+
+{% block jquery %}
+    $("#slider").flexslider({
+        animation: "slide",
+        controlNav: true,
+        animationLoop: true,
+        slideshow: true,
+        slideshowSpeed: 3500,
+        prevText: "",
+        nextText: "",
+    }); 
+{% endblock %}
+
+{% block content %}
+<div id="homepage">
+    <div class="ui grid">
+        <div class="row">
+            <div class="column">
+                {% ad_list var:'adslide' page:1 size:5 state:2 name:'index_slide' %}
+                <div id="slider" class="flexslider"> 
+                    <ul class="slides"> 
+    	                {% for ad in adslide.rows %}
+                            <li style="background-image: url('{{ ad.cover.fileurl }}');">
+                                <a href="{{ ad.view_url }}" target="_blank">
+                                    <img src="{{ ad.cover.fileurl }}" style="display: none;" />
+                                </a>
+                            </li>
+    					{% endfor %}
+                    </ul>
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+    
+    <div class="ui responsive grid">
+        <div class="row">
+            <div class="center aligned column">
+                <div class="ui horizontal list">
+                    <div class="item">
+                        <img src="/images/misfit-logo.jpg" /> 
+                    </div>
+                    <div class="item">
+                        <img src="/images/up-logo.jpg" /> 
+                    </div>
+                    <div class="item">
+                        <img src="/images/mi-logo.jpg" /> 
+                    </div>
+                    <div class="item">
+                        <img src="/images/fitbit-logo.jpg" /> 
+                    </div>
+                    <div class="item">
+                        <img src="/images/bong-logo.jpg" /> 
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="center aligned column">
+                <div class="ui two blocks">
+                    <div class="block">
+                        <a href="">
+                           <img src="/images/p-sanxing.jpg" /> 
+                        </a>
+                    </div>
+                    <div class="block">
+                        <a href="">
+                           <img src="/images/p-yishi.jpg" /> 
+                        </a>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="center aligned column">
+                <a href="">
+                   <img src="/images/about.jpg" /> 
+                </a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="center aligned column">
+                合作伙伴
+            </div>
+        </div>
+        <div class="row">
+            <div class="center aligned column">
+                <img src="/images/partner.jpg" /> 
+            </div>
+        </div>
+    </div>
+    
+    
+</div>
+{% endblock %}
