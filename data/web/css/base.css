@@ -25,11 +25,17 @@ body,
 .ui.secondary.inverted.menu {
     border-width: 0px;
 }
+.ui.secondary.inverted.menu a.item {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
 
 .ui.five.blocks > .block > a > img {
     width: 100%;
 }
 
+.bslide {
+    margin-top: 30px;
+}
 .bslide > .gray {
     background-color: #f3f3f3;
 }

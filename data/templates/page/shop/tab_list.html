@@ -4,7 +4,7 @@
 <style type="text/css">
 .shopcate.banner {
 	color: white;
-	padding: 0px;
+	padding: 30px;
 }
 .shopcate.banner > .ui.grid > .row {
     padding: 0px;
@@ -74,17 +74,6 @@
 
 {% category_list var:"list" istop:1 only_open:1 current:category_id show_all:0 %}
 {% if list.rows %}
-<div class="ui responsive grid">
-    <div class="row">
-        <div class="center aligned column">
-			<div class="ui horizontal list">
-                {% for cat in list.rows %}
-                    <a href="{{ cat.view_url }}" class="{{ cat.active }} item">{{ cat.title }}</a>
-                {% endfor %}
-            </div>
-        </div>
-    </div>
-</div>
 <div class="shopcate banner">
     <div class="ui responsive grid">
         <div class="row">
